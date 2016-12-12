@@ -4,14 +4,6 @@ XStudio Backend Service for Video Platform
 This is a backend service mainly for **auth**, **payment** and **video streaming**. Currently, just set up the restful api part, will set up mongo part later.
 
 
-Index
--------------
-
-You can insert a table of contents using the marker `[TOC]`:
-
-[TOC]
-
-
 Setup
 -------------
 
