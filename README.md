@@ -3,7 +3,6 @@ XStudio Backend Service for Video Platform
 
 This is a backend service mainly for **auth**, **payment** and **video streaming**. Currently, just set up the restful api part, will set up mongo part later.
 
-----------
 
 Index
 -------------
@@ -11,8 +10,6 @@ Index
 You can insert a table of contents using the marker `[TOC]`:
 
 [TOC]
-
-----------
 
 
 Setup
@@ -38,11 +35,6 @@ Start the server
 > - Send a HTTP request to `localhost:3000/api/v1/sample`, and you should get a message back
 
 
-The document panel is accessible using the <i class="icon-folder-open"></i> button in the navigation bar. You can create a new document by clicking <i class="icon-file"></i> **New document** in the document panel.
-
-----------
-
-
 Dependencies Intro & Tutorial
 -------------
 You may want to get more familiar with these frameworks:
@@ -59,5 +51,3 @@ You may want to get more familiar with these frameworks:
 > - Simple Aggregation queries
 > - Node.js version of driver for MongoDB: https://mongodb.github.io/node-mongodb-native/
 > - Mongoose.js: http://mongoosejs.com/
-
-----------
