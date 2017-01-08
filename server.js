@@ -15,13 +15,14 @@ const app = koa();
 app.keys = ['xs_cookie::secretkey'];
 app.use(session({ key: 'xs:sess' }, app));
 app.use(cors({
-  allowMethods: ['GET', 'POST', 'PUT'],
+  allowMethods: ['GET', 'POST', 'PUT', 'PATCH'],
   credentials: true
 }));
 app.use(body_parser());
 
 // Router
 app.use(mount('/api/v1', require('./router/auth')));
+app.use(mount('/api/v1', require('./router/users')));
 
 // This is runnable as a stand alone server
 if (require.main === module) {
