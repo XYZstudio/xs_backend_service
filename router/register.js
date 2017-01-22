@@ -11,8 +11,20 @@ var Users = require('../database/users');
 
 // Route
 router.post('/create_user', function*() {
-  var user = this.request.body;
-  yield Users.create(user);
+  var req = this.request.body;
+  var user = {
+    email: req.email,
+    name: req.name,
+    password: req.password,
+    status: 'active'
+  };
+  
+  try {
+    yield Users.create(user);
+  } catch(e) {
+    this.status(500);
+  }
+
   this.body = user;
 });
 
