@@ -21,18 +21,26 @@ app.use(cors({
 app.use(body_parser());
 
 // Router
+
+// No need for auth
+app.use(mount('/api/v1', require('./router/register')));
+
+// Need for auth
 app.use(mount('/api/v1', require('./router/auth')));
-app.use(mount('/api/v1', require('./router/users')));
+app.use(function*(next) {
+  if(this.isAuthenticated()) {
+    this.user = this.passport.user;
+    if(isPromise(this.passport.user)) {
+      this.user = yield this.passport.user;
+    }
+    yield next;
+  } else {
+    this.status = 401;
+  }
+});
 
 // This is runnable as a stand alone server
 if (require.main === module) {
-  if(config.port === 80) {
-    // If this is production
-    
-  } else {
-    // If this is development
-    
-  }
   console.log('Server started!');
   app.listen(config.port);
 }
