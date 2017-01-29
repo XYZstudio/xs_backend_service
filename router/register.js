@@ -29,9 +29,14 @@ router.post('/create_user', function*() {
     password: req.password,
     status: 'active'
   };
-  
+
   try {
     yield Users.create(user);
+  } catch(e) {
+    this.status = 500;
+  }
+  
+  try {
     // setup email data with unicode symbols
     var mailOptions = {
       from: '"Sporit" <no-reply@sporit.com>', // sender address
@@ -48,7 +53,7 @@ router.post('/create_user', function*() {
       console.log('Message %s sent: %s', info.messageId, info.response);
     });
   } catch(e) {
-    this.status(500);
+    // Ignore ...
   }
 
   this.body = user;
