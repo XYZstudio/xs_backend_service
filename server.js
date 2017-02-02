@@ -24,6 +24,7 @@ app.use(body_parser());
 
 // No need for auth
 app.use(mount('/api/v1', require('./router/register')));
+app.use(mount('/api/v1', require('./router/verify')));
 
 // Need for auth
 app.use(mount('/api/v1', require('./router/auth')));

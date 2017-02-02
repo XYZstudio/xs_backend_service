@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 var url = 'mongodb://localhost:27017/sporit';
 var options = {
