@@ -1,15 +1,13 @@
 // Module
-var koa = require('koa');
-var router = require('koa-router')();
-var nodemailer = require('@nodemailer/pro');
-var app = koa();
-
-
-// Config
+const koa = require('koa');
+const router = require('koa-router')();
+const co = require('co');
+const nodemailer = require('@nodemailer/pro');
+const bcrypt = require('bcrypt');
+const SALT_WORK_FACTOR = 10;
+const app = koa();
 const config = require('../config');
-
-// Database
-var Users = require('../database/users');
+const Users = require('../database/users');
 
 // create reusable transporter object using the default SMTP transport
 var transporter = nodemailer.createTransport({
@@ -20,14 +18,28 @@ var transporter = nodemailer.createTransport({
   }
 });
 
+var genToken = co.wrap(function*(target) {
+  var token = null;
+  try {
+    var salt = yield bcrypt.genSalt(SALT_WORK_FACTOR);
+    token = yield bcrypt.hash(target, salt);  
+  } catch(e) {
+    console.error(e);
+  }
+  
+  return token;
+});
+
 // Route
 router.post('/create_user', function*() {
   var req = this.request.body;
+  var token = yield genToken(req.email);
   var user = {
     email: req.email,
     name: req.name,
     password: req.password,
-    status: 'active'
+    status: 'inactive',
+    verify: token,
   };
 
   try {
@@ -37,15 +49,15 @@ router.post('/create_user', function*() {
   }
   
   try {
-    // setup email data with unicode symbols
     var mailOptions = {
-      from: '"Sporit" <no-reply@sporit.com>', // sender address
-      to: user.email, // list of receivers
-      subject: 'Welcome to sporit, ' + user.name + '!', // Subject line
-      html: '<b>Hello ' + user.name + ', you have registered in the sporit!</b>' // html body
+      from: '"Sporit" <no-reply@sporit.com>',
+      to: user.email,
+      subject: 'Welcome to sporit, ' + user.name + '!',
+      html: '<b>Hello ' + user.name + ', you have registered in the sporit!</b>' +
+            '<p>Here is one last step to finish your registeration, please click' +
+            'the link below to verify the email:</p><a href=' + config.verify_link + token + '>' +
+            'Click Here To Verify</a>'
     };
-
-    // send mail with defined transport object
     transporter.sendMail(mailOptions, function(err, info) {
       if (err) {
         return console.error(err);
