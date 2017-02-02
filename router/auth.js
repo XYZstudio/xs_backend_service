@@ -1,15 +1,11 @@
 // Module
-var koa = require('koa');
-var router = require('koa-router')();
-var passport = require('koa-passport');
+const koa = require('koa');
+const router = require('koa-router')();
+const passport = require('koa-passport');
 const LocalStrategy = require('passport-local').Strategy;
-var app = koa();
-
-// Config
+const app = koa();
 const config = require('../config');
-
-// Collection
-var Users = require('../database/users');
+const Users = require('../database/users');
 
 // Auth
 passport.serializeUser(function(user, done) {
