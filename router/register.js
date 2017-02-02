@@ -43,7 +43,16 @@ router.post('/create_user', function*() {
   };
 
   try {
-    yield Users.create(user);
+    var existingUser = yield Users.find({ email: req.email });
+    if (existingUser.length > 0) {
+      this.body = {
+        warning: 'The user already exists',
+        create: false
+      };
+      return;
+    } else {
+      yield Users.create(user);
+    }
   } catch(e) {
     this.status = 500;
   }
