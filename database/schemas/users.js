@@ -8,12 +8,12 @@ var UserSchema = new mongoose.Schema({
   name: String,
   password: String,
   status: String,
-  course: [
+  course: [{
       course_id: {
       	type: mongoose.Schema.Types.ObjectId,
       	ref: 'Course'
       }
-  ]
+  }]
 });
 
 UserSchema.pre('save', function(next) {
