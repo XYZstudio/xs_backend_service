@@ -4,46 +4,44 @@ const router = require('koa-router')();
 var app = koa();
 
 // Collection
-var Homework = require('../database/schemas/homework');
 var Videos = require('../database/schemas/video');
+var Courses = require('../database/schemas/course');
 
 // Route
-router.post('/add_video', function*() {
-	  console.log("add video");
+router.post('/add_course', function*() {
+	  console.log("add course");
     var req = this.request.body;
     
-    var video = {
+    var course = {
       name: req.name,
 	    title: req.title,
-	    description: req.description,
-	    video_path: req.video_path,
-	    homework: req.homework
+	    description: req.description
     };
     try {
-      yield Videos.create(video);
+      yield Courses.create(course);
     } catch(e) {
       this.status(500);
   }
 });
 
-router.post('/add_homework_to_video', function*() {
-    console.log("add homework to video");
+router.post('/add_video_to_course', function*() {
+    console.log("add video to course");
     var req = this.request.body;
-    var hw_name = req.hw_name;
     var video_name = req.video_name;
+    var course_name = req.course_name;
     try {
-      var hw = yield Homework.find({"name": hw_name});
+      var course = yield Courses.find({"name": course_name});
       var video = yield Videos.find({"name": video_name});
-      if( hw.length == 1 && video.length == 1) {
-        video[0].homework.push(hw[0]._id);
-        Videos.update({_id: video[0]._id}, video[0].toObject(), {new: true}, function(err, comment){
+      if( video.length == 1 && video.length == 1) {
+        course[0].video.push(video[0]._id);
+        Courses.update({_id: course[0]._id}, course[0].toObject(), {new: true}, function(err, comment){
           if(err){
             console.log(err);
             return;
           }
         });
       } else{
-        console.log("invalid homework or video");
+        console.log("invalid course or video");
       }
       //console.log(hw[0].title);
     } catch(e) {

@@ -2,7 +2,10 @@ var mongoose = require('mongoose');
 var db = require('../connection')();
 
 var VideoSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String, 
+    unique: true
+  },
   title: String,
   description: String,
   video_path: String,

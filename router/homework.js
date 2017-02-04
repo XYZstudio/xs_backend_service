@@ -1,8 +1,6 @@
 // Module
 const koa = require('koa');
 const router = require('koa-router')();
-//var passport = require('koa-passport');
-//const LocalStrategy = require('passport-local').Strategy;
 var app = koa();
 
 // Config
@@ -16,7 +14,6 @@ var Homework = require('../database/schemas/homework');
 router.post('/add_homework', function*() {
 	console.log("add homework");
     var req = this.request.body;
-    console.log(req.title);
     
     var hw = {
       name: req.name,

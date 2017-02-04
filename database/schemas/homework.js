@@ -2,7 +2,10 @@ var mongoose = require('mongoose');
 var db = require('../connection')();
 
 var HomeworkSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String, 
+    unique: true
+  },
   title: String,
   description: String,
   question: String,

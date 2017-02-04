@@ -35,6 +35,12 @@ app.use(mount('/api/v1', require('./router/homework')));
 //for video
 app.use(mount('/api/v1', require('./router/video')));
 
+//for course
+app.use(mount('/api/v1', require('./router/course')));
+
+//for normal operation to user
+app.use(mount('/api/v1', require('./router/user')));
+
 app.use(function*(next) {
   if(this.isAuthenticated()) {
     this.user = this.passport.user;
