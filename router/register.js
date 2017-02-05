@@ -1,34 +1,11 @@
 // Module
 const koa = require('koa');
 const router = require('koa-router')();
-const co = require('co');
-const nodemailer = require('@nodemailer/pro');
-const bcrypt = require('bcrypt');
-const SALT_WORK_FACTOR = 10;
 const app = koa();
+const sendEmail = require('../service/email');
+const genToken = require('../service/encrypt');
 const config = require('../config');
 var Users = require('../database/schemas/users');
-
-// create reusable transporter object using the default SMTP transport
-var transporter = nodemailer.createTransport({
-  service: config.email.service,
-  auth: {
-    user: config.email.email,
-    pass: config.email.password
-  }
-});
-
-var genToken = co.wrap(function*(target) {
-  var token = null;
-  try {
-    var salt = yield bcrypt.genSalt(SALT_WORK_FACTOR);
-    token = yield bcrypt.hash(target, salt);  
-  } catch(e) {
-    console.error(e);
-  }
-  
-  return token;
-});
 
 // Route
 router.post('/create_user', function*() {
@@ -67,12 +44,7 @@ router.post('/create_user', function*() {
             'the link below to verify the email:</p><a href=' + config.verify_link + token + '>' +
             'Click Here To Verify</a>'
     };
-    transporter.sendMail(mailOptions, function(err, info) {
-      if (err) {
-        return console.error(err);
-      }
-      console.log('Message %s sent: %s', info.messageId, info.response);
-    });
+    yield sendEmail(mailOptions);
   } catch(e) {
     // Ignore ...
   }
