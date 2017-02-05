@@ -1,20 +1,28 @@
 const mongoose = require('mongoose');
-const db = require('./connection')();
+const db = require('../connection')();
 const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 
 var UserSchema = new mongoose.Schema({
-  email: String,
+  email: {
+    type: String, 
+    unique: true
+  },
   name: String,
   password: String,
   status: String,
   verify: String,
+  course: [{
+      course_id: {
+      	type: mongoose.Schema.Types.ObjectId,
+      	ref: 'Course'
+      }
+  }]
 });
 
 UserSchema.pre('save', function(next) {
   var user = this;
 
-  // only hash the password if it has been modified (or is new)
   if (!user.isModified('password')) {
     return next();
   }

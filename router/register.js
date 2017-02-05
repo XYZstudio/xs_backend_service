@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 const app = koa();
 const config = require('../config');
-const Users = require('../database/users');
+var Users = require('../database/schemas/users');
 
 // create reusable transporter object using the default SMTP transport
 var transporter = nodemailer.createTransport({
