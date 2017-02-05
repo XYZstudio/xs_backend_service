@@ -3,6 +3,8 @@ const koa = require('koa');
 const router = require('koa-router')();
 const app = koa();
 const config = require('../config');
+const sendEmail = require('../service/email');
+const genToken = require('../service/encrypt');
 const Users = require('../database/schemas/users');
 
 // Route
@@ -16,6 +18,36 @@ router.get('/verify/:token', function*() {
   }
 
   this.status = 200;
+});
+
+router.get('/verify/:email/email', function*() {
+  const email = this.params.email;
+  try {
+    const user = yield Users.findOne({ email: email });
+    if (user) {
+      const token = yield genToken(user.email);
+      yield Users.update({ email: email }, { verify: token });
+      const mailOptions = {
+        from: '"Sporit" <no-reply@sporit.com>',
+        to: user.email,
+        subject: 'Welcome to sporit, ' + user.name + '!',
+        html: '<p>Hello ' + user.name + ', here is your verification code:</p>' +
+              '<p>Please copy and paste it into blank: ' + token
+      };
+      yield sendEmail(mailOptions);
+      this.body = {
+        error: false,
+        response: '验证码已发送',
+      };
+    } else {
+      this.body = {
+        error: true,
+        response: '未找到与该邮箱相关的注册用户',
+      };
+    }
+  } catch(e) {
+    // Ignore ...
+  }
 });
 
 // Export
