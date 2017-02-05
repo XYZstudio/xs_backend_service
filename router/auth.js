@@ -5,7 +5,7 @@ const passport = require('koa-passport');
 const LocalStrategy = require('passport-local').Strategy;
 const app = koa();
 const config = require('../config');
-const Users = require('../database/users');
+var Users = require('../database/schemas/users');
 
 // Auth
 passport.serializeUser(function(user, done) {

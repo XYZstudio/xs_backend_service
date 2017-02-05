@@ -3,7 +3,7 @@ const koa = require('koa');
 const router = require('koa-router')();
 const app = koa();
 const config = require('../config');
-const Users = require('../database/users');
+const Users = require('../database/schemas/users');
 
 // Route
 router.get('/verify/:token', function*() {
