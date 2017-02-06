@@ -8,8 +8,12 @@ var Users = require('../database/schemas/users');
 var Courses = require('../database/schemas/course');
 
 // Route
+//{
+//  "course_name": ""
+//  "user_name": ""
+//}
 router.post('/add_course_to_user_by_name', function*() {
-  console.log("add course to user");
+  console.log("[router.user] POST: add_course_to_user_by_name");
   var req = this.request.body;
   var course_name = req.course_name;
   var user_name = req.user_name;
@@ -25,8 +29,12 @@ router.post('/add_course_to_user_by_name', function*() {
           return;
         }
       });
-    } else{
+    } else {
       console.log("invalid user or course");
+      this.body = {
+        error: true,
+        response: '用户名或课程名不正确',
+      };
     }
     //console.log(hw[0].title);
   } catch(e) {
