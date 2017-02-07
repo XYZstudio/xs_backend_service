@@ -8,26 +8,54 @@ var app = koa();
 
 // Collection
 var Users = require('../database/schemas/users');
-var Homework = require('../database/schemas/homework');
+var Homeworks = require('../database/schemas/homework');
 
 // Route
+
+//{
+//  "name": "", 
+//  "title": "", 
+//  "description": "", 
+//  "question": "", 
+//  "answer": ""
+//}
 router.post('/add_homework', function*() {
-	console.log("add homework");
-    var req = this.request.body;
-    
-    var hw = {
-      name: req.name,
+	console.log("[router.homework] POST: add_homework");
+  var req = this.request.body;
+  var hw_name = req.name;
+  var hw = yield Homeworks.find({"name": hw_name});
+  if( hw.length >= 1) {
+    this.body = {
+      error: true,
+      response: "作业名: '" + hw_name + "'已存在"
+    }
+    return;
+  }
+
+  var homework = {
+    name: req.name,
 	  title: req.title,
 	  description: req.description,
 	  question: req.question,
 	  answer: req.answer
-    };
-    try {
-    yield Homework.create(hw);
-    } catch(e) {
+  };
+  try {
+    yield Homeworks.create(homework);
+  } catch(e) {
     this.status(500);
   }
 });
+
+//  return all homeworks
+router.get('/homeworks', function*() {
+  console.log("[router.homework] GET: homeworks");
+  var homework_list = yield Homeworks.find();
+   this.body = {
+      response: homework_list
+    }
+});
+
+
 
 // Export
 app.use(router.routes());
