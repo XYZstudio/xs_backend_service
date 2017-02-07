@@ -19,7 +19,6 @@ module.exports = function(mailOptions) {
         console.error(err);
         reject();
       }
-      console.log('Message %s sent: %s', info.messageId, info.response);
       resolve();
     });
   });

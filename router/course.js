@@ -9,7 +9,7 @@ var Courses = require('../database/schemas/course');
 
 // Route
 router.post('/add_course', function*() {
-	  console.log("add course");
+	  console.log("[router.course] POST: add_course");
     var req = this.request.body;
     
     var course = {
@@ -25,7 +25,7 @@ router.post('/add_course', function*() {
 });
 
 router.post('/add_video_to_course', function*() {
-    console.log("add video to course");
+    console.log("[course] POST: add_video_to_course");
     var req = this.request.body;
     var video_name = req.video_name;
     var course_name = req.course_name;
@@ -42,8 +42,11 @@ router.post('/add_video_to_course', function*() {
         });
       } else{
         console.log("invalid course or video");
+        this.body = {
+          error: true,
+          response: '视频名或课程名不正确',
+        };
       }
-      //console.log(hw[0].title);
     } catch(e) {
       console.log(e);
     }

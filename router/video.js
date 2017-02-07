@@ -27,7 +27,7 @@ router.post('/add_video', function*() {
 });
 
 router.post('/add_homework_to_video', function*() {
-    console.log("add homework to video");
+    console.log("[router.video] POST: add_homework_to_video");
     var req = this.request.body;
     var hw_name = req.hw_name;
     var video_name = req.video_name;
@@ -44,8 +44,11 @@ router.post('/add_homework_to_video', function*() {
         });
       } else{
         console.log("invalid homework or video");
+        this.body = {
+          error: true,
+          response: '作业名或视频名称不正确'
+        };
       }
-      //console.log(hw[0].title);
     } catch(e) {
       console.log(e);
     }
