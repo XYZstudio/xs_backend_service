@@ -2,13 +2,8 @@
 const koa = require('koa');
 const router = require('koa-router')();
 var app = koa();
-
-// Config
-//const config = require('../config');
-
-// Collection
 var Users = require('../database/schemas/users');
-var Homeworks = require('../database/schemas/homework');
+var Homeworks = require('../database/schemas/homeworks');
 
 // Route
 
