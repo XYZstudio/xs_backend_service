@@ -4,20 +4,21 @@ const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 
 var UserSchema = new mongoose.Schema({
-  email: {
-    type: String, 
-    unique: true
-  },
+  email: { type: String, unique: true },
   name: String,
   password: String,
   status: String,
   verify: String,
-  course: [{
-      course_id: {
-      	type: mongoose.Schema.Types.ObjectId,
-      	ref: 'Course'
-      }
-  }]
+  course: [
+    {
+      courseName: { type: String },
+      finished: [
+        {
+          videoName: { type: String }
+        }
+      ]
+    }
+  ]
 });
 
 UserSchema.pre('save', function(next) {
@@ -51,4 +52,4 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
 };
 
 
-module.exports = db.connection.model('USERS', UserSchema);
+module.exports = db.connection.model('Users', UserSchema);

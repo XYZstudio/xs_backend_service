@@ -4,26 +4,25 @@ const router = require('koa-router')();
 var app = koa();
 
 // Collection
-var Homework = require('../database/schemas/homework');
-var Videos = require('../database/schemas/video');
+var Homework = require('../database/schemas/homeworks');
+var Videos = require('../database/schemas/videos');
 
 // Route
 router.post('/add_video', function*() {
 	  console.log("add video");
     var req = this.request.body;
-    
     var video = {
       name: req.name,
-	    title: req.title,
 	    description: req.description,
 	    video_path: req.video_path,
 	    homework: req.homework
     };
+
     try {
       yield Videos.create(video);
     } catch(e) {
       this.status(500);
-  }
+    }
 });
 
 router.post('/add_homework_to_video', function*() {
