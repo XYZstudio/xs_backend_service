@@ -4,6 +4,7 @@ const mount = require('koa-mount');
 const session = require('koa-session');
 const cors = require('kcors');
 const body_parser = require('koa-body-parser');
+const isPromise = require('is-promise');
 
 // Config
 const config = require('./config');
@@ -25,22 +26,10 @@ app.use(body_parser());
 // No need for auth
 app.use(mount('/api/v1', require('./router/register')));
 app.use(mount('/api/v1', require('./router/verify')));
+app.use(mount('/api/v1', require('./router/course')));
 
 // Need for auth
 app.use(mount('/api/v1', require('./router/auth')));
-
-//for homework
-app.use(mount('/api/v1', require('./router/homework')));
-
-//for video
-app.use(mount('/api/v1', require('./router/video')));
-
-//for course
-app.use(mount('/api/v1', require('./router/course')));
-
-//for normal operation to user
-app.use(mount('/api/v1', require('./router/user')));
-
 app.use(function*(next) {
   if(this.isAuthenticated()) {
     this.user = this.passport.user;
@@ -52,9 +41,12 @@ app.use(function*(next) {
     this.status = 401;
   }
 });
+app.use(mount('/api/v1', require('./router/homework')));
+app.use(mount('/api/v1', require('./router/video')));
+app.use(mount('/api/v1', require('./router/user')));
 
 // This is runnable as a stand alone server
 if (require.main === module) {
-  console.log('Server started!');
+  console.log('Server started at', config.port);
   app.listen(config.port);
 }

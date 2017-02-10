@@ -1,47 +1,57 @@
 // Module
-var koa = require('koa');
-var router = require('koa-router')();
-const genToken = require('../service/encrypt');
-var app = koa();
+const koa = require('koa');
+const router = require('koa-router')();
+const _ = require('underscore');
 const config = require('../config');
-var Users = require('../database/schemas/users');
-var Courses = require('../database/schemas/course');
+const genToken = require('../service/encrypt');
+const app = koa();
+const Users = require('../database/schemas/users');
+const Courses = require('../database/schemas/courses');
 
 // Route
-//{
-//  "course_name": ""
-//  "user_name": ""
-//}
-router.post('/add_course_to_user_by_name', function*() {
-  console.log("[router.user] POST: add_course_to_user_by_name");
+
+// Update multiple course name into Users
+// and return the updated user data
+router.post('/add_course_to_user', function*() {
   var req = this.request.body;
-  var course_name = req.course_name;
-  var user_name = req.user_name;
+  var courseNames = req.courseNames;
+  var email = req.email;
+
   try {
-    var course = yield Courses.find({"name": course_name});
-    var user = yield Users.find({"name": user_name});
-    if( course.length == 1 && user.length == 1) {
-      user[0].course.push(course[0]._id);
-      Users.update({_id: user[0]._id}, user[0].toObject(), {new: true}, function(err, comment){
-        if(err){
-          console.log(err);
-          this.status = 500;
-          return;
-        }
-      });
-    } else {
-      console.log("invalid user or course");
+    // update users' courses
+    var existedCourses = yield Users.findOne({ email: email });
+    existedCourses = existedCourses.course.map(c => c.courseName);
+    courseNames = _.difference(courseNames, existedCourses).map((n) => { return { courseName: n } });
+
+    if (courseNames.length === 0) {
       this.body = {
         error: true,
-        response: '用户名或课程名不正确',
+        response: '所选课程已经存在于用户的课单',
       };
+      return;
     }
-    //console.log(hw[0].title);
+
+    yield Users.update({ email: email }, {
+      $addToSet: {
+        course: { $each: courseNames }
+      }
+    });
+
+    // get updated user data
+    this.body = yield Users.findOne({ email: email });
+    return;
   } catch(e) {
-    console.log(e);
+    this.status = 500;
+    this.body = {
+      error: true,
+      response: '用户名或课程名不正确',
+    };
+    return;
   }
 });
 
+// Reset and update user's password
+// if the verification token and user email matches
 router.post('/reset_password', function*() {
   const body = this.request.body;
   var user = null;

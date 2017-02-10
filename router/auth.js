@@ -9,10 +9,10 @@ var Users = require('../database/schemas/users');
 
 // Auth
 passport.serializeUser(function(user, done) {
-  done(null, user._id.toString());
+  done(null, user.email.toString());
 });
 passport.deserializeUser(function(id, done) {
-  done(null, Users.findOne({ _id: id }).exec(function(err, user){
+  done(null, Users.findOne({ email: id }).exec(function(err, user){
     if(err){
       done(err, false);
     } else {
