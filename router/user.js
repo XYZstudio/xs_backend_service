@@ -66,7 +66,7 @@ router.post('/reset_password', function*() {
         error: true,
         message: '更新失败，请检查验证码是否正确'
       };
-      return;  
+      return;
     }
   } catch(e) {
     console.error(err);
@@ -78,6 +78,32 @@ router.post('/reset_password', function*() {
     message: '成功更新了密码',
     user: user,
   };
+});
+
+// Update last user activity
+router.post('/update_last_activity', function*() {
+  const body = this.request.body;
+  var email = body.email;
+  var lastActivity = {
+    courseName: body.courseName,
+    videoName: body.videoName,
+    time: body.time
+  };
+
+  try {
+    yield Users.update({ email: email }, { lastActivity: lastActivity });
+    this.body = {
+      error: false,
+      message: '成功更新了最后活动'
+    };
+    return;
+  } catch(e) {
+    this.body = {
+      error: true,
+      message: '更新失败，请检查所更新的最后活动'
+    };
+    return;
+  }
 });
 
 // Export
