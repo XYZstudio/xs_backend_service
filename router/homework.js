@@ -7,6 +7,35 @@ var Homeworks = require('../database/schemas/homeworks');
 
 // Route
 
+// find a home work by name
+router.post('/get_homework_by_name', function*() {
+  var hw_name = this.request.body.homeworkName;
+  var homework;
+  
+  try {
+    homework = yield Homeworks.find({name: hw_name});
+  } catch(e) {
+    this.status = 500;
+    return;
+  }
+  this.body = homework;
+  return;
+});
+
+router.get('/get_homework_by_name', function*() {
+  var hw_name = this.header.homeworkName;
+  var homework;
+  
+  try {
+    homework = yield Homeworks.find({name: hw_name});
+  } catch(e) {
+    this.status = 500;
+    return;
+  }
+  this.body = homework;
+  return;
+});
+
 //{
 //  "name": "", 
 //  "title": "", 

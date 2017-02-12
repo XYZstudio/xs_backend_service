@@ -9,6 +9,36 @@ const Users = require('../database/schemas/users');
 
 // Route
 
+// Get Course info by name
+router.get('/get_course_info_by_name', function*() {
+  const course_name = this.header.coursename;
+  var course; 
+  try {
+    course = yield Courses.findOne({ name: course_name });
+
+  } catch(e) {
+    this.status = 500;
+    return;
+  }
+
+  this.body = course;
+});
+
+// Get Course info by name
+router.post('/get_course_info_by_name', function*() {
+  const course_name = this.request.body.coursename;
+  var course; 
+  try {
+    course = yield Courses.findOne({ name: course_name });
+
+  } catch(e) {
+    this.status = 500;
+    return;
+  }
+
+  this.body = course;
+});
+
 // Get all available courses
 router.get('/get_all_courses', function*() {
   const email = this.params.email;
@@ -71,12 +101,18 @@ router.post('/add_video_to_course', function*() {
     var course = yield Courses.find({ name: course_name });
     var video = yield Videos.find({ name: video_name });
     if(video.length == 1 && video.length == 1) {
-      course[0].video.push(video[0]._id);
+      /*
+      course[0].video.push(video[0].name);
       Courses.update({ _id: course[0]._id }, course[0].toObject(), { new: true }, function(err, comment){
         if(err){
           console.error(err);
           return;
         }
+      });*/
+      yield Courses.update({ name: course_name }, {
+      $addToSet: {
+        video: { videoName: video_name }
+      }
       });
     } else{
       console.error('invalid course or video');
