@@ -11,6 +11,7 @@ var Videos = require('../database/schemas/videos');
 router.post('/add_video', function*() {
 	  console.log("add video");
     var req = this.request.body;
+
     var video = {
       name: req.name,
 	    description: req.description,
@@ -23,6 +24,8 @@ router.post('/add_video', function*() {
     } catch(e) {
       this.status(500);
     }
+
+    this.body = video;
 });
 
 router.post('/add_homework_to_video', function*() {
@@ -34,7 +37,7 @@ router.post('/add_homework_to_video', function*() {
       var hw = yield Homework.find({"name": hw_name});
       var video = yield Videos.find({"name": video_name});
       if( hw.length == 1 && video.length == 1) {
-        video[0].homework.push(hw[0]._id);
+        video[0].homework.push(hw_name);
         Videos.update({_id: video[0]._id}, video[0].toObject(), {new: true}, function(err, comment){
           if(err){
             console.log(err);
