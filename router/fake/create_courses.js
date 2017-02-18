@@ -12,7 +12,7 @@ co(function* () {
     for (var j = 0; j < 10; j++) {
       var video = {
         name: `${faker.commerce.productName()}_${i}${j}`,
-        description: faker.lorem.paragraph(),
+        description: faker.lorem.sentences(),
         video_path: 'VIDEO_PATH'
       };
       videos.push({ videoName: video.name });
@@ -21,7 +21,7 @@ co(function* () {
 
     yield Courses.create({
       name: courseName,
-      description: faker.lorem.paragraph(),
+      description: faker.lorem.sentence(),
       image: faker.random.image(),
       video: videos
     });
