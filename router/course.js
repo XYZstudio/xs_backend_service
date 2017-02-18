@@ -3,40 +3,29 @@ const koa = require('koa');
 const router = require('koa-router')();
 const config = require('../config');
 const app = koa();
-const Videos = require('../database/schemas/videos');
-const Courses = require('../database/schemas/courses');
 const Users = require('../database/schemas/users');
+const Courses = require('../database/schemas/courses');
+const Videos = require('../database/schemas/videos');
 
 // Route
-
 // Get Course info by name
-router.get('/get_course_info_by_name', function*() {
-  const course_name = this.header.coursename;
-  var course; 
+router.get('/get_course/:course_name', function*() {
+  const course_name = this.params.course_name;
+  var course;
+  var videos; 
   try {
     course = yield Courses.findOne({ name: course_name });
-
+    video_names = course.video.map(c => c.videoName);
+    videos = yield Videos.find({ name: { $in: video_names } });
   } catch(e) {
     this.status = 500;
     return;
   }
 
-  this.body = course;
-});
-
-// Get Course info by name
-router.post('/get_course_info_by_name', function*() {
-  const course_name = this.request.body.coursename;
-  var course; 
-  try {
-    course = yield Courses.findOne({ name: course_name });
-
-  } catch(e) {
-    this.status = 500;
-    return;
-  }
-
-  this.body = course;
+  this.body = {
+    course: course,
+    videos: videos
+  };
 });
 
 // Get all available courses
