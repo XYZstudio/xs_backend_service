@@ -59,81 +59,73 @@ router.post('/add_homework_to_video', function*() {
     }
 });
 
-router.post('/display/:video_name', function*() {
+router.get('/display/:video_name', function*() {
   console.log("[router.video] GET: display");
-  var video = yield Videos.find({"name": video_name});
+  const video_name = this.params.video_name;
+  var video = yield Videos.findOne({"name": video_name});
+  console.log(video.video_path);
   var file = video.video_path;
+  var headers = this.headers; 
+  console.log(this.headers);
+  var range;
+  var positions;
+  var start;
+  var file_size;
+  var end;
+  var chunksize;
+  var stream_position;
 
-  fs.stat(file, function(err, stats) {
-
-    if(err)
-    {
-
-      console.log(err)
-      if(err.code === 'ENOENT')
-      {
-        this.status = 404;
-        return;
+  if (! fs.existsSync(path)) {
+      this.body = {
+        error: true,
+        response: "file not exists"
       }
-      this.body = err;
-      return;
-    }
+  }
 
-    let range = req.headers.range;
-    //let range = req.body.range;
-    console.log(req.headers);
+
+
+  range = headers.range;
     
-    if(!range)
-    {
-      let err = new Error("Wrong range");
-        this.status = 416;
-        this.body = {
-          error: true,
-          resposne: "Wrong range"
-        }
-      return ;
-    }
+  if(!range)
+  {
+    let err = new Error("Wrong range");
+      this.status = 416;
+      this.body = {
+        error: true,
+        resposne: "Wrong range"
+      }
+    return ;
+  }
 
-    let positions = range.replace(/bytes=/, "").split("-");
+  var stats = fs.statSync(file);
+  positions = range.replace(/bytes=/, "").split("-");
 
-    let start = parseInt(positions[0], 10);
+  start = parseInt(positions[0], 10);
 
-    let file_size = stats.size;
+  file_size = stats.size;
 
-    console.log("positions[1] ===============>" + positions[1]);
-    console.log("file_size ===============>" + file_size);
-    let end = positions[1] ? parseInt(positions[1], 10) : file_size - 1;
-    console.log("end ===============>" + end);
-
-    let chunksize = (end - start) + 1;
-
-    this.set("Content-Range", "bytes " + start + "-" + end + "/" + file_size);
-    this.set("Accept-Ranges", "bytes");
-    this.set("Content-Length", chunksize);
-    this.set("Content-Type", "video/mp4");
-
-    let stream_position = {
-      start: start,
-      end: end
-    }
+  
+  end = positions[1] ? parseInt(positions[1], 10) : file_size - 1;
 
 
-    let stream = fs.createReadStream(file, stream_position)
+  chunksize = (end - start) + 1;
 
 
-    stream.on("open", function() {
+  stream_position = {
+    start: start,
+    end: end
+  }
 
-      stream.pipe(this.body);
+  this.set("Content-Range", "bytes " + start + "-" + end + "/" + file_size);
+  
+  this.set("Accept-Ranges", "bytes");
 
-    })
+  this.set("Content-Length", chunksize);
 
-    stream.on("error", function(err) {
+  this.set("Content-Type", "video/mp4");
 
-      return next(err);
-
-    });
-
-  });
+  this.status = 206;
+  this.body = fs.createReadStream(file, stream_position);
 
 });
 
