@@ -30,17 +30,17 @@ app.use(mount('/api/v1', require('./router/course')));
 
 // Need for auth
 app.use(mount('/api/v1', require('./router/auth')));
-app.use(function*(next) {
-  if(this.isAuthenticated()) {
-    this.user = this.passport.user;
-    if(isPromise(this.passport.user)) {
-      this.user = yield this.passport.user;
-    }
-    yield next;
-  } else {
-    this.status = 401;
-  }
-});
+// app.use(function*(next) {
+//   if(this.isAuthenticated()) {
+//     this.user = this.passport.user;
+//     if(isPromise(this.passport.user)) {
+//       this.user = yield this.passport.user;
+//     }
+//     yield next;
+//   } else {
+//     this.status = 401;
+//   }
+// });
 app.use(mount('/api/v1', require('./router/homework')));
 app.use(mount('/api/v1', require('./router/video')));
 app.use(mount('/api/v1', require('./router/user')));
