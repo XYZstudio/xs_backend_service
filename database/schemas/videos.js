@@ -3,8 +3,8 @@ var db = require('../connection')();
 
 var VideoSchema = new mongoose.Schema({
   name: { type: String, unique: true },
-  description: String,
-  video_path: String,
+  description:  String,
+  video_path:   String,
   homework: [
     {
       homeworkName: { type: String }
