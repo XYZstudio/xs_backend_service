@@ -63,10 +63,8 @@ router.get('/display/:video_name', function*() {
   console.log("[router.video] GET: display");
   const video_name = this.params.video_name;
   var video = yield Videos.findOne({"name": video_name});
-  console.log(video.video_path);
-  var file = video.video_path;
+  var file = path.resolve(__dirname, video.video_path);
   var headers = this.headers; 
-  console.log(this.headers);
   var range;
   var positions;
   var start;
@@ -75,58 +73,42 @@ router.get('/display/:video_name', function*() {
   var chunksize;
   var stream_position;
 
-  if (! fs.existsSync(path)) {
-      this.body = {
-        error: true,
-        response: "file not exists"
-      }
+  if (!fs.existsSync(file)) {
+    this.body = {
+      error: true,
+      response: "file not exists"
+    }
   }
-
-
 
   range = headers.range;
     
-  if(!range)
-  {
+  if(!range) {
     let err = new Error("Wrong range");
-      this.status = 416;
-      this.body = {
-        error: true,
-        resposne: "Wrong range"
-      }
+    this.status = 416;
+    this.body = {
+      error: true,
+      resposne: "Wrong range"
+    }
     return ;
   }
 
   var stats = fs.statSync(file);
   positions = range.replace(/bytes=/, "").split("-");
-
   start = parseInt(positions[0], 10);
-
   file_size = stats.size;
-
-  
   end = positions[1] ? parseInt(positions[1], 10) : file_size - 1;
-
-
   chunksize = (end - start) + 1;
-
-
   stream_position = {
     start: start,
     end: end
   }
 
   this.set("Content-Range", "bytes " + start + "-" + end + "/" + file_size);
-  
   this.set("Accept-Ranges", "bytes");
-
   this.set("Content-Length", chunksize);
-
   this.set("Content-Type", "video/mp4");
-
   this.status = 206;
   this.body = fs.createReadStream(file, stream_position);
-
 });
 
 // Export
