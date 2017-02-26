@@ -12,11 +12,14 @@ const Videos = require('../database/schemas/videos');
 router.get('/get_course/:course_name', function*() {
   const course_name = this.params.course_name;
   var course;
-  var videos; 
+  var videos;
+  var preview;
   try {
     course = yield Courses.findOne({ name: course_name });
     video_names = course.video.map(c => c.videoName);
     videos = yield Videos.find({ name: { $in: video_names } });
+    preview = videos.filter((v) => { return v.preview; })[0];
+    videos = videos.filter((v) => { return !v.preview; });
   } catch(e) {
     this.status = 500;
     return;
@@ -24,7 +27,8 @@ router.get('/get_course/:course_name', function*() {
 
   this.body = {
     course: course,
-    videos: videos
+    videos: videos,
+    preview: preview,
   };
 });
 
