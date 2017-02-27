@@ -17,6 +17,12 @@ router.post('/create_user', function*() {
     password: req.password,
     status: 'inactive',
     verify: token,
+    lastActivity: {
+      courseName: '',
+      videoName: '',
+      time: 0
+    },
+    course: []
   };
 
   try {
