@@ -13,6 +13,7 @@ const Courses = require('../database/schemas/courses');
 // Update multiple course name into Users
 // and return the updated user data
 router.post('/add_course_to_user', function*() {
+  console.log("[router.user] POST: add_course_to_user");
   var req = this.request.body;
   var courseNames = req.courseNames;
   var email = req.email;
@@ -53,6 +54,7 @@ router.post('/add_course_to_user', function*() {
 // Reset and update user's password
 // if the verification token and user email matches
 router.post('/reset_password', function*() {
+  console.log("[router.user] POST: reset_password");
   const body = this.request.body;
   var user = null;
 
@@ -82,6 +84,7 @@ router.post('/reset_password', function*() {
 
 // Update last user activity
 router.post('/update_last_activity', function*() {
+  console.log("[router.user] POST: update_last_activity");
   const body = this.request.body;
   var email = body.email;
   var lastActivity = {
@@ -108,6 +111,7 @@ router.post('/update_last_activity', function*() {
 
 // update finished video list of the course which the user has
 router.post('/update_finished_video_to_user', function*() {
+  console.log("[router.user] POST: update_finished_video_to_user");
   const body = this.request.body;
   var email = body.email;
   var video_name = body.videoName;
@@ -159,6 +163,7 @@ router.post('/update_finished_video_to_user', function*() {
 
 // if the user exists, return the completed video of specified course
 router.post('/get_finished_videos_of_course', function*() {
+  console.log("[router.user] POST: get_finished_videos_of_course");
   const body = this.request.body;
   var course_name = body.courseName;
   var email = body.email;
