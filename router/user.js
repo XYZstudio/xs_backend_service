@@ -92,10 +92,7 @@ router.post('/update_last_activity', function*() {
 
   try {
     yield Users.update({ email: email }, { lastActivity: lastActivity });
-    this.body = {
-      error: false,
-      message: '成功更新了最后活动'
-    };
+    this.body = yield Users.findOne({ email: email });
     return;
   } catch(e) {
     this.body = {
