@@ -1,8 +1,8 @@
 {
   "email": {
     "service": "gmail",
-    "email": "xxx@gmail.com",
-    "password": "xxx"
+    "email": "xyzstudiogo@gmail.com",
+    "password": "xyzstudio2017@1234"
   },
   "port": 3000,
   "verify_link": "http://localhost:3000/api/v1/verify/"
