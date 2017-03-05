@@ -5,12 +5,14 @@ var options = {
   server: { reconnectTries: Number.MAX_VALUE }
 };
 var db_temp = null;
+var error_count = 0;
 
 var get_connection = function(resolve, reject) {
   var db = mongoose.createConnection(url, options);
 
   // if connection failed
   db.on('error', function(err) {
+    error_count ++;
     console.error('Error: MongoDb error', error_count, url, err.message, db.readyState);
     reject(err.message);
   });

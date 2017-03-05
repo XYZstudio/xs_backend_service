@@ -9,7 +9,7 @@ co(function* () {
         avatarPath:       faker.system.filePath(), 
         myWebsite:        faker.internet.url(),
         tweeter:          faker.internet.url(),
-        facobook:         faker.internet.url(), 
+        facebook:         faker.internet.url(), 
         linkedin:         faker.internet.url(),
         renren:           faker.internet.url()
   	};

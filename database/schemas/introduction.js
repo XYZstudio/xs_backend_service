@@ -9,7 +9,7 @@ var IntroductionSchema = new mongoose.Schema({
   qq:               String,
   Wechat:           String,
   tweeter:          String,
-  facobook:         String, 
+  facebook:         String, 
   linkedin:         String,
   renren:           String
 });
