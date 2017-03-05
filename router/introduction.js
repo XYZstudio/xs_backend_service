@@ -31,6 +31,7 @@ router.post('/update_user_introduction', function*() {
   var intro = {
     "userName":         user_name,
     "avatarPath":       body.avatarPath, 
+    "selfIntroduction": body.selfIntroduction,
     "myWebsite":        body.myWebsite,
     "weibo":            body.weibo,
     "qq":               body.qq,
