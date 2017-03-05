@@ -9,6 +9,7 @@ var Homeworks = require('../database/schemas/homeworks');
 
 // find a home work by name
 router.post('/get_homework_by_name', function*() {
+  console.log("[router.homework] POST: get_homework_by_name");
   var hw_name = this.request.body.homeworkName;
   var homework;
   
@@ -23,6 +24,7 @@ router.post('/get_homework_by_name', function*() {
 });
 
 router.get('/get_homework_by_name', function*() {
+  console.log("[router.homework] GET: get_homework_by_name");
   var hw_name = this.header.homeworkName;
   var homework;
   

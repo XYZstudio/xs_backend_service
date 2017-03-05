@@ -45,6 +45,13 @@ app.use(mount('/api/v1', require('./router/homework')));
 app.use(mount('/api/v1', require('./router/video')));
 app.use(mount('/api/v1', require('./router/user')));
 
+// for personal information
+app.use(mount('/api/v1', require('./router/introduction')));
+app.use(mount('/api/v1', require('./router/contactInfo')));
+app.use(mount('/api/v1', require('./router/resume')));
+app.use(mount('/api/v1', require('./router/educationBackground')));
+app.use(mount('/api/v1', require('./router/workExperience')));
+
 // This is runnable as a stand alone server
 if (require.main === module) {
   console.log('Server started at', config.port);
