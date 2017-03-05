@@ -34,7 +34,11 @@ router.get('/verify/:email/email', function*() {
         html: '<p>Hello ' + user.name + ', here is your verification code:</p>' +
               '<p>Please copy and paste it into blank: ' + token
       };
-      yield sendEmail(mailOptions);
+      try {
+        yield sendEmail(mailOptions);
+      } catch(e) {
+        // Ignore ...
+      }
       this.body = {
         error: false,
         response: '验证码已发送',
