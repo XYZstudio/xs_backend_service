@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var db = require('../connection')();
 
 var WorkExperienceSchema = new mongoose.Schema({
-  userName: { type: String, unique: true },
+  userName: { type: String },
   companyName:      String, 
   title:            String,
   location:         String,

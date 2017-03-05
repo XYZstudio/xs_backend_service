@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 var db = require('../connection')();
 
-var WorkExperienceSchema = new mongoose.Schema({
-  userName: { type: String, unique: true },
+var EducationBackgroundSchema = new mongoose.Schema({
+  userName: { type: String },
   schoolName:       String, 
   location:         String,
   startYear:        Number, 
@@ -14,4 +14,4 @@ var WorkExperienceSchema = new mongoose.Schema({
   description:      String
 });
 
-module.exports = db.connection.model('WorkExperience', WorkExperienceSchema);
+module.exports = db.connection.model('EducationBackground', EducationBackgroundSchema);

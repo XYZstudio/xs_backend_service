@@ -32,6 +32,9 @@ router.post('/update_user_introduction', function*() {
     "userName":         user_name,
     "avatarPath":       body.avatarPath, 
     "myWebsite":        body.myWebsite,
+    "weibo":            body.weibo,
+    "qq":               body.qq,
+    "Wechat":           body.Wechat,
     "tweeter":          body.tweeter,
     "facobook":         body.facobook, 
     "linkedin":         body.linkedin,
@@ -40,9 +43,10 @@ router.post('/update_user_introduction', function*() {
 
   var user_intro = yield Introductions.findOne({userName: user_name});
   if( user_intro == null ) {
-    yield Introductions.create(intro);
+    intro = yield Introductions.create(intro);
   } else {
-    yield Introductions.update({userName: user_name}, intro, {new: true});
+    intro = yield Introductions.update({userName: user_name}, intro, {new: true});
+    intro.update = true;
   }
   
 

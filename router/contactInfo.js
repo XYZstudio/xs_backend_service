@@ -28,27 +28,29 @@ router.post('/update_user_contact', function*() {
     return;
   }
 
-  var intro = {
+  var contact = {
     "userName":         user_name,
     "firstName":        body.firstName, 
     "lastName":         body.lastName,
     "email":            body.email,
     "address":          body.address, 
-    "country":          body.country,
+    "city":             body.city,
+    "province":         body.province,
     "zipcode":          body.zipcode,
     "cellPhone":        body.cellPhone,
     "mobile":           body.mobile
   };
 
-  var user_intro = yield ContactInfos.findOne({userName: user_name});
-  if( user_intro == null ) {
-    yield ContactInfos.create(intro);
+  var user_contact = yield ContactInfos.findOne({userName: user_name});
+  if( user_contact == null ) {
+    contact = yield ContactInfos.create(contact);
   } else {
-    yield ContactInfos.update({userName: user_name}, intro, {new: true});
+    contact = yield ContactInfos.update({userName: user_name}, contact, {new: true});
+    contact.update = true;
   }
   
 
-  this.body = intro;
+  this.body = contact;
   return;
 });
 
@@ -56,7 +58,7 @@ router.post('/update_user_contact', function*() {
 router.get('/get_user_contact/:userName', function*() {
   console.log("[router.contactInfo] GET: get_user_contact");
   const user_name = this.params.userName;
-  var intro;
+  var contact;
 
   try {
     var user = yield Users.find({email: user_name});
@@ -73,14 +75,14 @@ router.get('/get_user_contact/:userName', function*() {
   }
   
 
-  intro = yield ContactInfos.findOne({userName: user_name});
+  contact = yield ContactInfos.findOne({userName: user_name});
 
-  if ( intro == null ) {
+  if ( contact == null ) {
     this.body = {};
     return;
   }
 
-  this.body = intro;
+  this.body = contact;
   return;
 });
 

@@ -70,9 +70,10 @@ router.post('/update_user_resume', function*() {
 
   var user_resume = yield Resumes.findOne({userName: user_name});
   if( user_resume == null ) {
-    yield Resumes.create(resume);
+    resume = yield Resumes.create(resume);
   } else {
-    yield Resumes.update({userName: user_name}, resume, {new: true});
+    resume = yield Resumes.update({userName: user_name}, resume, {new: true});
+    resume.update = true;
   }
   
   parts.dispose();
@@ -80,11 +81,10 @@ router.post('/update_user_resume', function*() {
   this.body = resume;
 });
 
-// get introduction by email
-router.get('/get_user_resume/:userName', function*() {
-  console.log("[router.resume] GET: get_user_resume");
+// download resume by email
+router.get('/download_user_resume/:userName', function*() {
+  console.log("[router.resume] GET: download_user_resume");
   const user_name = this.params.userName;
-  var intro;
 
   try {
     var user = yield Users.find({email: user_name});
@@ -111,9 +111,44 @@ router.get('/get_user_resume/:userName', function*() {
     return;
   }
 
-  this.set('Content-disposition', 'attachment; resume=' + resume.fileName);
-  this.attachment(resume.path)
+  this.set('Content-disposition', 'attachment; filename=' + resume.fileName);
+  this.attachment(resume.fileName);
   this.body = fs.createReadStream(resume.path);
+
+});
+
+
+// get resume name by email
+router.get('/get_user_resume_name/:userName', function*() {
+  console.log("[router.resume] GET: get_user_resume_name");
+  const user_name = this.params.userName;
+
+  try {
+    var user = yield Users.find({email: user_name});
+    if( user.length < 1 ) {
+      this.body = {
+        error: true, 
+        response: "用户不存在"
+      }
+      return;
+    }
+  } catch(e) {
+    this.status = 500;
+    return;
+  }
+  
+ 
+  var resume = yield Resumes.findOne({userName: user_name});
+
+  if ( resume == null ) {
+    this.body = {
+      error: true,
+      response: "Cannot find resume"
+    };
+    return;
+  }
+
+  this.body = resume.fileName;
 
 });
 
