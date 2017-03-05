@@ -36,7 +36,7 @@ router.post('/update_user_introduction', function*() {
     "qq":               body.qq,
     "Wechat":           body.Wechat,
     "tweeter":          body.tweeter,
-    "facobook":         body.facobook, 
+    "facebook":         body.facebook, 
     "linkedin":         body.linkedin,
     "renren":           body.renren
   };
