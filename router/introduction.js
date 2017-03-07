@@ -34,6 +34,12 @@ router.post('/update_user_introduction', function*() {
     "userName":         user_name,
     "avatarPath":       body.avatarPath, 
     "selfIntroduction": body.selfIntroduction,
+    "gender":           body.gender,
+    "birthYear":        body.birthYear,
+    "birthMonth":       body.birthMonth,
+    "birthDate":        body.birthDate,
+    "highestDegree":    body.highestDegree,
+    "business":         body.business,
     "myWebsite":        body.myWebsite,
     "weibo":            body.weibo,
     "qq":               body.qq,
@@ -41,7 +47,8 @@ router.post('/update_user_introduction', function*() {
     "tweeter":          body.tweeter,
     "facebook":         body.facebook, 
     "linkedin":         body.linkedin,
-    "renren":           body.renren
+    "renren":           body.renren,
+    "hobbies":          body.hobbies
   };
   var user_intro = yield Introductions.findOne({userName: user_name});
   if( user_intro == null ) {
