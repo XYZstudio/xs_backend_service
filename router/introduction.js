@@ -10,6 +10,7 @@ var Users = require('../database/schemas/users');
 // update introduction by email
 router.post('/update_user_introduction', function*() {
   console.log("[router.introduction] POST: update_user_introduction");
+  console.log(this.request.body);
   var body = this.request.body;
   var user_name = body.userName;
   var user;
@@ -17,6 +18,7 @@ router.post('/update_user_introduction', function*() {
   try {
     user = yield Users.find({email: user_name});
     if( user.length < 1 ) {
+      console.log('update_user_introduction: user not exist:' + user_name);
       this.body = {
         error: true, 
         response: "用户不存在"
@@ -48,16 +50,16 @@ router.post('/update_user_introduction', function*() {
     "renren":           body.renren,
     "hobbies":          body.hobbies
   };
-
   var user_intro = yield Introductions.findOne({userName: user_name});
   if( user_intro == null ) {
+    console.log('Creating new introduction...');
     intro = yield Introductions.create(intro);
   } else {
+    console.log('updating exsiting introduction...');
     intro = yield Introductions.update({userName: user_name}, intro, {new: true});
     intro.update = true;
   }
-  
-
+  console.log('sucessfylly updated the instroction');
   this.body = intro;
   return;
 });

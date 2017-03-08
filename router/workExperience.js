@@ -17,6 +17,7 @@ router.post('/update_user_work_experience', function*() {
   try {
     user = yield Users.find({email: user_name});
     if( user.length < 1 ) {
+      console.log('update_user_work_experience: user not exsited!');
       this.body = {
         error: true, 
         response: "用户不存在"
@@ -42,13 +43,16 @@ router.post('/update_user_work_experience', function*() {
 
   var user_workExp = yield WorkExperiences.findOne({userName: user_name});
   if( user_workExp == null || body._id == null) {
+    console.log('update_user_work_experience: create new work experience!');
+    console.log(workExp);
     workExp = yield WorkExperiences.create(workExp);
   } else {
+    console.log('update_user_work_experience: update old work experience!');
+    console.log(workExp);
     workExp = yield WorkExperiences.update({_id: body._id}, workExp, {new: true});
     workExp.update = true;
   }
   
-
   this.body = workExp;
   return;
 });
@@ -85,6 +89,32 @@ router.get('/get_user_work_experience/:userName', function*() {
   return;
 });
 
+
+// delete work experience by experience id
+router.post('/delete_user_work_experience_by_id', function*() {
+  console.log("[router.workExperience] POST: delete_user_work_experience_by_id");
+  const body = this.request.body;
+  var exp_id = body._id;
+  var exp;
+  try {
+    exp = yield WorkExperiences.findOne({_id: exp_id});
+    if( exp == null ) {
+      this.body = {
+        error: true, 
+        response: "该背景不存在"
+      }
+      return;
+    }
+  } catch(e) {
+    this.status = 500;
+    return;
+  }
+  
+  exp = yield WorkExperiences.find({_id: exp_id}).remove();
+
+  this.body = exp;
+  return;
+});
 
 
 // Export

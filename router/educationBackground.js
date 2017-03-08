@@ -86,6 +86,34 @@ router.get('/get_user_education/:userName', function*() {
   return;
 });
 
+// delete education by education id
+router.post('/delete_user_education_by_id', function*() {
+  console.log("[router.educationBackground] POST: delete_user_education_by_id");
+  const body = this.request.body;
+  var edu_id = body._id;
+  var edu;
+  try {
+    edu = yield Educations.findOne({_id: edu_id});
+    if( edu == null ) {
+      this.body = {
+        error: true, 
+        response: "该背景不存在"
+      }
+      return;
+    }
+  } catch(e) {
+    this.status = 500;
+    return;
+  }
+  
+  edu = yield Educations.find({_id: edu_id}).remove();
+
+  this.body = edu;
+  return;
+});
+
+
+
 
 
 // Export
