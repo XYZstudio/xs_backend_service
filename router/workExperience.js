@@ -86,6 +86,32 @@ router.get('/get_user_work_experience/:userName', function*() {
 });
 
 
+// delete work experience by experience id
+router.post('/delete_user_work_experience_by_id', function*() {
+  console.log("[router.workExperience] POST: delete_user_work_experience_by_id");
+  const body = this.request.body;
+  var exp_id = body._id;
+  var exp;
+  try {
+    exp = yield WorkExperiences.findOne({_id: exp_id});
+    if( exp == null ) {
+      this.body = {
+        error: true, 
+        response: "该背景不存在"
+      }
+      return;
+    }
+  } catch(e) {
+    this.status = 500;
+    return;
+  }
+  
+  exp = yield WorkExperiences.find({_id: exp_id}).remove();
+
+  this.body = exp;
+  return;
+});
+
 
 // Export
 app.use(router.routes());
