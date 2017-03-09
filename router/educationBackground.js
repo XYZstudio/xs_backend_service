@@ -30,6 +30,7 @@ router.post('/update_user_education_background', function*() {
 
   var education = {
     "userName":         body.userName,
+    "userId":           body.userId,
     "schoolName":       body.schoolName, 
     "location":         body.location,
     "startYear":        body.startYear, 

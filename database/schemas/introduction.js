@@ -3,14 +3,9 @@ var db = require('../connection')();
 
 var IntroductionSchema = new mongoose.Schema({
   userName: { type: String, unique: true },
+  userId:   { type: String, unique: true },
   avatarPath:       String, 
   selfIntroduction: String,
-  gender:           String,
-  birthYear:        Number,
-  birthMonth:       Number,
-  birthDate:        Number,
-  highestDegree:    String,
-  business:         String,
   myWebsite:        String,
   weibo:            String,
   qq:               String,
@@ -18,8 +13,7 @@ var IntroductionSchema = new mongoose.Schema({
   tweeter:          String,
   facebook:         String, 
   linkedin:         String,
-  renren:           String,
-  hobbies:          [String]
+  renren:           String
 });
 
 module.exports = db.connection.model('Introductions', IntroductionSchema);
