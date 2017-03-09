@@ -10,6 +10,7 @@ const Videos = require('../database/schemas/videos');
 // Route
 // Get Course info by name
 router.get('/get_course/:course_name', function*() {
+  console.log("course name :" + this.params.course_name);
   const course_name = this.params.course_name;
   var course;
   var videos;

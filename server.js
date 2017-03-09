@@ -27,6 +27,13 @@ app.use(body_parser());
 app.use(mount('/api/v1', require('./router/register')));
 app.use(mount('/api/v1', require('./router/verify')));
 app.use(mount('/api/v1', require('./router/course')));
+// for personal information
+app.use(mount('/api/v1', require('./router/introduction')));
+app.use(mount('/api/v1', require('./router/contactInfo')));
+app.use(mount('/api/v1', require('./router/resume')));
+app.use(mount('/api/v1', require('./router/educationBackground')));
+app.use(mount('/api/v1', require('./router/workExperience')));
+app.use(mount('/api/v1', require('./router/basicInfo')));
 
 // Need for auth
 app.use(mount('/api/v1', require('./router/auth')));
@@ -45,13 +52,6 @@ app.use(mount('/api/v1', require('./router/homework')));
 app.use(mount('/api/v1', require('./router/video')));
 app.use(mount('/api/v1', require('./router/user')));
 
-// for personal information
-app.use(mount('/api/v1', require('./router/introduction')));
-app.use(mount('/api/v1', require('./router/contactInfo')));
-app.use(mount('/api/v1', require('./router/resume')));
-app.use(mount('/api/v1', require('./router/educationBackground')));
-app.use(mount('/api/v1', require('./router/workExperience')));
-app.use(mount('/api/v1', require('./router/basicInfo')));
 
 // This is runnable as a stand alone server
 if (require.main === module) {
