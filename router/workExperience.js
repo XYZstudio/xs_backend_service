@@ -30,6 +30,7 @@ router.post('/update_user_work_experience', function*() {
 
   var workExp = {
     "userName":         body.userName,
+    "userId":           body.userId,
     "companyName":      body.companyName, 
     "title":            body.title,
     "location":         body.location,
