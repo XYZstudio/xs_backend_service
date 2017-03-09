@@ -147,9 +147,11 @@ router.get('/get_user_resume_name/:userName', function*() {
     };
     return;
   }
-
-  this.body = resume.fileName;
-
+  console.log(resume);
+  this.body = {
+    fileName : resume.fileName,
+    filePath : resume.path
+  }
 });
 
 
