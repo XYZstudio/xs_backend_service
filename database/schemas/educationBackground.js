@@ -3,6 +3,7 @@ var db = require('../connection')();
 
 var EducationBackgroundSchema = new mongoose.Schema({
   userName: { type: String },
+  userId:   { type: String },
   schoolName:       String, 
   location:         String,
   startYear:        Number, 

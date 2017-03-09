@@ -33,6 +33,7 @@ app.use(mount('/api/v1', require('./router/contactInfo')));
 app.use(mount('/api/v1', require('./router/resume')));
 app.use(mount('/api/v1', require('./router/educationBackground')));
 app.use(mount('/api/v1', require('./router/workExperience')));
+app.use(mount('/api/v1', require('./router/basicInfo')));
 
 // Need for auth
 app.use(mount('/api/v1', require('./router/auth')));
@@ -50,6 +51,7 @@ app.use(function*(next) {
 app.use(mount('/api/v1', require('./router/homework')));
 app.use(mount('/api/v1', require('./router/video')));
 app.use(mount('/api/v1', require('./router/user')));
+
 
 // This is runnable as a stand alone server
 if (require.main === module) {

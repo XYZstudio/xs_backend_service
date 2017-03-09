@@ -30,8 +30,6 @@ router.post('/update_user_contact', function*() {
 
   var contact = {
     "userName":         user_name,
-    "firstName":        body.firstName, 
-    "lastName":         body.lastName,
     "email":            body.email,
     "address":          body.address, 
     "city":             body.city,

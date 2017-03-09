@@ -64,6 +64,7 @@ router.post('/update_user_resume', function*() {
 
   var resume = {
     userName: user_name,
+    userId:   parts.field.userId,
     fileName: fileName,
     path:     targetFile
   }
@@ -72,6 +73,13 @@ router.post('/update_user_resume', function*() {
   if( user_resume == null ) {
     resume = yield Resumes.create(resume);
   } else {
+    try {
+      if(fs.existsSync(user_resume.path)) {
+        fs.unlinkSync(user_resume.path)
+      }
+    } catch(e) {
+      console.log(e);
+    }
     resume = yield Resumes.update({userName: user_name}, resume, {new: true});
     resume.update = true;
   }
