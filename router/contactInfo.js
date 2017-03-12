@@ -11,12 +11,15 @@ var Users = require('../database/schemas/users');
 router.post('/update_user_contact', function*() {
   console.log("[router.contactInfo] POST: update_user_contact");
   var body = this.request.body;
+  console.log(body);
   var user_name = body.userName;
+  var user_id = body.userId;
   var user;
   
   try {
     user = yield Users.find({email: user_name});
     if( user.length < 1 ) {
+      console.log(user_name + 'user not exsited!');
       this.body = {
         error: true, 
         response: "用户不存在"
@@ -30,6 +33,7 @@ router.post('/update_user_contact', function*() {
 
   var contact = {
     "userName":         user_name,
+    "userId":           user_id,
     "email":            body.email,
     "address":          body.address, 
     "city":             body.city,
@@ -41,8 +45,10 @@ router.post('/update_user_contact', function*() {
 
   var user_contact = yield ContactInfos.findOne({userName: user_name});
   if( user_contact == null ) {
+    console.log('insert new user contact info for' + user_name);
     contact = yield ContactInfos.create(contact);
   } else {
+    console.log('update old user contact info for' + user_name);
     contact = yield ContactInfos.update({userName: user_name}, contact, {new: true});
     contact.update = true;
   }

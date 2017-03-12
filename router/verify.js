@@ -25,7 +25,7 @@ router.get('/verify/:email/email', function*() {
   try {
     const user = yield Users.findOne({ email: email });
     if (user) {
-      const token = yield genToken(user.email);
+      const token = yield genToken(user.email, true);
       yield Users.update({ email: email }, { verify: token });
       const mailOptions = {
         from: '"Sporit" <no-reply@sporit.com>',
