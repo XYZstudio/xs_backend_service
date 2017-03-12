@@ -65,9 +65,8 @@ router.get('/logout_user',function*(){
 router.post('/reset_password', function*() {
   const body = this.request.body;
   var user = null;
-
   try {
-    const newToken = yield genToken(body.password);
+    const newToken = yield genToken(body.password, false);
     user = yield Users.findOne({ email: body.email, verify: body.token });
     if (user) {
       yield Users.update({ email: body.email, verify: body.token }, { password: newToken });

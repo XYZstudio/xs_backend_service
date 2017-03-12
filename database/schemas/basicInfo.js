@@ -6,6 +6,7 @@ var BasicInfoSchema = new mongoose.Schema({
   userId:   { type: String, unique: true },
   firstName:        String,
   lastName:         String, 
+  currentStatus:    String,
   gender:           String,
   birthYear:        Number,
   birthMonth:       Number,
