@@ -33,6 +33,7 @@ router.post('/update_user_basic_info_by_id', function*() {
     "userName":         body.userName,
     "firstName":        body.firstName,
     "lastName":         body.lastName, 
+    "currentStatus":    body.currentStatus,
     "gender":           body.gender,
     "birthYear":        body.birthYear,
     "birthMonth":       body.birthMonth,
