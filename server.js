@@ -5,6 +5,7 @@ const session = require('koa-session');
 const cors = require('kcors');
 const body_parser = require('koa-body-parser');
 const isPromise = require('is-promise');
+const fs = require('fs');
 
 // Config
 const config = require('./config');
@@ -20,6 +21,16 @@ app.use(cors({
   credentials: true
 }));
 app.use(body_parser());
+
+// Directory
+var resume_dir = __dirname + "/resumes";
+var video_dir = __dirname + "/videos";
+if (!fs.existsSync(resume_dir)){
+    fs.mkdirSync(resume_dir);
+}
+if (!fs.existsSync(video_dir)){
+    fs.mkdirSync(video_dir);
+}
 
 // Router
 
