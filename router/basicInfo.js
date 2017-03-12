@@ -7,7 +7,7 @@ var Users = require('../database/schemas/users');
 
 // Route
 
-// update basic information by email
+// update basic information by id
 router.post('/update_user_basic_info_by_id', function*() {
   console.log("[router.basicInfo] POST: update_user_basic_info_by_id");
   var body = this.request.body;

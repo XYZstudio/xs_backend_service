@@ -42,6 +42,7 @@ app.use(function*(next) {
 });
 
 // Need for auth
+app.use(mount('/api/v1', require('./router/paymentHistory')));
 app.use(mount('/api/v1', require('./router/introduction')));
 app.use(mount('/api/v1', require('./router/contactInfo')));
 app.use(mount('/api/v1', require('./router/resume')));
