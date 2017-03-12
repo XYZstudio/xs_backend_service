@@ -69,11 +69,31 @@ router.post('/create_user', function*() {
     var mailOptions = {
       from: '"Sporit" <no-reply@sporit.com>',
       to: user.email,
-      subject: 'Welcome to sporit, ' + user.name + '!',
-      html: '<b>Hello ' + user.name + ', you have registered in the sporit!</b>' +
-            '<p>Here is one last step to finish your registeration, please click' +
-            'the link below to verify the email:</p><a href=' + config.verify_link + token + '>' +
-            'Click Here To Verify</a>'
+      subject: '思博锐体育会员注册激活',
+      html: '<div style="width: 100%; border-bottom: 3px solid lightskyblue; margin-bottom: 35px;">' +
+              `<img src='https://s15.postimg.org/i4hcero8b/logo.png' style="width: 100px;" />` +
+            '</div>' +
+            '<div>' +
+              `<b>亲爱的 ${user.name}, </b>` +
+              '<p>非常感谢您注册加入思博锐（SPORiT），成为我们尊贵的会员！</p>' +
+              `<p>点击<a href='${config.verify_link}${token}'>激活链接</a>，即可激活会员身份，拥有会员专享课程、独家求职资讯、线下精彩活动动态！</p>` +
+              '<div style="background-color: #f1f1f1; margin: 20px; padding: 10px; border-radius: 10px">' +
+                '<ul style="list-style: none;">' +
+                  `<li>姓名：${user.name}</li>` +
+                  `<li>邮箱地址：${req.email}</li>` +
+                  `<li>账号：${req.email}</li>` +
+                  `<li>密码：${req.password}</li>` +
+                '</ul>' +
+              '</div>' +
+            '</div>' +
+            '<div style="padding: 15px; margin-top: 35px; width: 100%; border-top: 3px solid lightskyblue;">' +
+              '<p style="font-style: italic; color: dimgrey;">' +
+                '思博锐（SPORiT）始于哥伦比亚大学体育管理专业，' +
+                '是一批具有优秀专业素养的青年携手国内外体育产业知名专家创立的国际化体育精英人才交流平台。' +
+                '思博锐以中国的体育事业发展为己任，致力于为中国体育管理人才缺失的问题提供综合解决方案，为中国体育产业管理不断注入新鲜血液。' +
+                '努力建设中国体育管理精英联盟，共同推进中国体育发展！' +
+              '</p>' +
+            '</div>'
     };
     yield sendEmail(mailOptions);
     console.log('Email sent.');
