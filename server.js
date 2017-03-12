@@ -27,16 +27,8 @@ app.use(body_parser());
 app.use(mount('/api/v1', require('./router/register')));
 app.use(mount('/api/v1', require('./router/verify')));
 app.use(mount('/api/v1', require('./router/course')));
-// for personal information
-app.use(mount('/api/v1', require('./router/introduction')));
-app.use(mount('/api/v1', require('./router/contactInfo')));
-app.use(mount('/api/v1', require('./router/resume')));
-app.use(mount('/api/v1', require('./router/educationBackground')));
-app.use(mount('/api/v1', require('./router/workExperience')));
-app.use(mount('/api/v1', require('./router/basicInfo')));
-
-// Need for auth
 app.use(mount('/api/v1', require('./router/auth')));
+
 app.use(function*(next) {
   if(this.isAuthenticated()) {
     this.user = this.passport.user;
@@ -48,6 +40,14 @@ app.use(function*(next) {
     this.status = 401;
   }
 });
+
+// Need for auth
+app.use(mount('/api/v1', require('./router/introduction')));
+app.use(mount('/api/v1', require('./router/contactInfo')));
+app.use(mount('/api/v1', require('./router/resume')));
+app.use(mount('/api/v1', require('./router/educationBackground')));
+app.use(mount('/api/v1', require('./router/workExperience')));
+app.use(mount('/api/v1', require('./router/basicInfo')));
 app.use(mount('/api/v1', require('./router/homework')));
 app.use(mount('/api/v1', require('./router/video')));
 app.use(mount('/api/v1', require('./router/user')));

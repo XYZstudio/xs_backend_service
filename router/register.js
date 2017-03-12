@@ -10,13 +10,13 @@ var Users = require('../database/schemas/users');
 // Route
 router.post('/create_user', function*() {
   console.log('register!');
-  console.log(this.request.body);
   var req = this.request.body;
-  var token = yield genToken(req.email);
+  var password = yield genToken(req.password, false);
+  var token = yield genToken(req.email, true);
   var user = {
     email: req.email,
     name: req.name,
-    password: req.password,
+    password: password,
     status: 'inactive',
     verify: token,
     lastActivity: {
