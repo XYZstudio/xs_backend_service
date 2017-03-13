@@ -52,6 +52,7 @@ router.post('/create_user', function*() {
       this.status = 500;
       return;
     } else {
+      //create new user
       console.log('Creating user...');
       yield Users.create(user);
     }
@@ -101,7 +102,7 @@ router.post('/create_user', function*() {
     // Ignore ...
   }
 
-  this.body = user;
+  this.body = yield Users.find({ email: req.email });;
 });
 
 // Export
