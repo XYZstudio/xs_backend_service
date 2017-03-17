@@ -1,6 +1,8 @@
 // Module
 const koa = require('koa');
 const router = require('koa-router')();
+const multipart = require('co-multipart');
+const base64 = require('base-64');
 const _ = require('underscore');
 const config = require('../config');
 const app = koa();
@@ -155,6 +157,41 @@ router.post('/get_finished_videos_of_course', function*() {
       response: "找不到用户"
     }
     return;
+  }
+});
+
+// post user icon
+router.post('/save_icon', function*() {
+  var parts = yield* multipart(this);
+  var email = parts.field.userName;
+  var icon = base64.encode(parts.file);
+
+  try {
+    yield Users.findOneAndUpdate({ email: email }, { $set: { icon: icon } });
+    var user = yield Users.findOne({ email: email });
+    this.body = user;
+    return;
+  } catch(e) {
+    this.body = {
+      error: true,
+      response: "无法存储该头像"
+    };
+  }
+});
+
+// get user icon
+router.get('/get_icon/:userName', function*() {
+  var email = this.params.userName;
+
+  try {
+    var user = yield Users.findOne({ email: email });
+    this.body = user.icon || '';
+    return;
+  } catch(e) {
+    this.body = {
+      error: true,
+      response: "无法提取该头像"
+    };
   }
 });
 

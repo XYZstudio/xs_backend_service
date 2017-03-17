@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@nodemailer/pro": "^1.0.0",
+    "base-64": "^0.1.0",
     "bcrypt": "^1.0.2",
     "co": "^4.6.0",
     "co-multipart": "0.2.0",
