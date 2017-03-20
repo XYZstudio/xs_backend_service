@@ -10,6 +10,7 @@ var UserSchema = new mongoose.Schema({
   status:        String,
   verify:        String,
   icon:          String,
+  icon_type:          String,
   lastActivity: {
     courseName:  String,
     videoName:   String,

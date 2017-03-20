@@ -1,5 +1,8 @@
 // Module
+const fs = require('fs');
 const koa = require('koa');
+const multipart = require('co-multipart');
+const base64 = require('base-64');
 const router = require('koa-router')();
 var app = koa();
 var Introductions = require('../database/schemas/introduction');
@@ -33,7 +36,6 @@ router.post('/update_user_introduction', function*() {
   var intro = {
     "userName":         user_name,
     "userId":           body.userId,
-    "avatarPath":       body.avatarPath, 
     "selfIntroduction": body.selfIntroduction,
     "myWebsite":        body.myWebsite,
     "weibo":            body.weibo,
@@ -90,7 +92,46 @@ router.get('/get_user_introduction/:userName', function*() {
   return;
 });
 
+// post user icon
+router.post('/save_icon', function*() {
+  var parts = yield* multipart(this);
+  var email = parts.field.userName;
+  var icon_path = parts.file.file.path;
+  var icon = fs.readFileSync(icon_path);
+  var icon_type = parts.file.file.mimeType;
+  icon = icon.toString('base64');
 
+  try {
+    yield Users.findOneAndUpdate({ email: email }, { $set: { icon: icon, icon_type: icon_type } });
+    var user = yield Users.findOne({ email: email });
+    this.body = user;
+    return;
+  } catch(e) {
+    this.body = {
+      error: true,
+      response: "无法存储该头像"
+    };
+  }
+});
+
+// get user icon
+router.get('/get_icon/:userName', function*() {
+  var email = this.params.userName;
+
+  try {
+    var user = yield Users.findOne({ email: email });
+    this.body = {
+      icon: user.icon || '',
+      icon_type: user.icon_type || ''
+    };
+    return;
+  } catch(e) {
+    this.body = {
+      error: true,
+      response: "无法提取该头像"
+    };
+  }
+});
 
 // Export
 app.use(router.routes());
