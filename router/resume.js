@@ -1,7 +1,7 @@
 // Module
 const koa = require('koa');
 const router = require('koa-router')();
-var multipart = require('co-multipart')
+var multipart = require('co-multipart');
 var app = koa();
 var Resumes = require('../database/schemas/resume');
 var Users = require('../database/schemas/users');
