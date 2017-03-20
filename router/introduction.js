@@ -13,7 +13,6 @@ var Users = require('../database/schemas/users');
 // update introduction by email
 router.post('/update_user_introduction', function*() {
   console.log("[router.introduction] POST: update_user_introduction");
-  console.log(this.request.body);
   var body = this.request.body;
   var user_name = body.userName;
   var user;
