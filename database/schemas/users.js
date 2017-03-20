@@ -9,6 +9,8 @@ var UserSchema = new mongoose.Schema({
   password:      String,
   status:        String,
   verify:        String,
+  icon:          String,
+  icon_type:          String,
   lastActivity: {
     courseName:  String,
     videoName:   String,
