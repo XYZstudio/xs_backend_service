@@ -68,7 +68,7 @@ router.post('/create_user', function*() {
   try {
     console.log('Sending email...');
     var mailOptions = {
-      from: '"Sporit" <no-reply@sporit.com>',
+      from: config.email.email,
       to: user.email,
       subject: '思博锐体育会员注册激活',
       html: '<div style="width: 100%; border-bottom: 3px solid lightskyblue; margin-bottom: 35px;">' +

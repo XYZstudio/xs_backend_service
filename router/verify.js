@@ -28,7 +28,7 @@ router.get('/verify/:email/email', function*() {
       const token = yield genToken(user.email, true);
       yield Users.update({ email: email }, { verify: token });
       const mailOptions = {
-        from: '"Sporit" <no-reply@sporit.com>',
+        from: config.email.email,
         to: user.email,
         subject: '思博锐体育会员密码重置',
         html: '<div style="width: 100%; border-bottom: 3px solid lightskyblue; margin-bottom: 35px;">' +
