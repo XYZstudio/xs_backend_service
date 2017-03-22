@@ -9,7 +9,7 @@ module.exports = co.wrap(function*(target, noDot) {
     var salt = yield bcrypt.genSalt(SALT_WORK_FACTOR);
     token = yield bcrypt.hash(target, salt);
     if (noDot) {
-      token = token.replace(/\//g, '_');
+      token = token.replace(/[\/\.]/g, '_');
     }
   } catch(e) {
     console.error(e);
