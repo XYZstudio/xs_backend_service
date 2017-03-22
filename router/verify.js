@@ -30,9 +30,30 @@ router.get('/verify/:email/email', function*() {
       const mailOptions = {
         from: '"Sporit" <no-reply@sporit.com>',
         to: user.email,
-        subject: 'Welcome to sporit, ' + user.name + '!',
-        html: '<p>Hello ' + user.name + ', here is your verification code:</p>' +
-              '<p>Please copy and paste it into blank: ' + token
+        subject: '思博锐体育会员密码重置',
+        html: '<div style="width: 100%; border-bottom: 3px solid lightskyblue; margin-bottom: 35px;">' +
+                `<img src='https://s15.postimg.org/i4hcero8b/logo.png' style="width: 100px;" />` +
+              '</div>' +
+              '<div>' +
+                `<b>亲爱的 ${user.name}, </b>` +
+                '<p>您已成功发送了重置密码的请求，只需最后三步即可重置你的密码：</p>' +
+                '<div style="background-color: #f1f1f1; margin: 20px; padding: 10px; border-radius: 10px">' +
+                  '<ul style="list-style: none;">' +
+                    `<li>第一步：复制以下代码：<b>${token}</b></li>` +
+                    `<li>第二步：将代码黏贴至‘黏贴验证码’中</li>` +
+                    `<li>第三步：点击‘确认‘</li>` +
+                    `<li>密码重置成功！</li>` +
+                  '</ul>' +
+                '</div>' +
+              '</div>' +
+              '<div style="padding: 15px; margin-top: 35px; width: 100%; border-top: 3px solid lightskyblue;">' +
+                '<p style="font-style: italic; color: dimgrey;">' +
+                  '思博锐（SPORiT）始于哥伦比亚大学体育管理专业，' +
+                  '是一批具有优秀专业素养的青年携手国内外体育产业知名专家创立的国际化体育精英人才交流平台。' +
+                  '思博锐以中国的体育事业发展为己任，致力于为中国体育管理人才缺失的问题提供综合解决方案，为中国体育产业管理不断注入新鲜血液。' +
+                  '努力建设中国体育管理精英联盟，共同推进中国体育发展！' +
+                '</p>' +
+              '</div>'
       };
       try {
         yield sendEmail(mailOptions);
