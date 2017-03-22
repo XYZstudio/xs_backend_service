@@ -5,11 +5,16 @@ const config = require('../config');
 
 // create reusable transporter object using the default SMTP transport
 var transporter = nodemailer.createTransport({
-  service: config.email.service,
-  auth: {
-    user: config.email.email,
-    pass: config.email.password
-  }
+    host: config.email.host,
+    secureConnection: false,
+    port: config.email.port,
+    tls: {
+      ciphers:'SSLv3'
+    },
+    auth: {
+      user: config.email.email,
+      pass: config.email.password
+    }
 });
 
 module.exports = function(mailOptions) {

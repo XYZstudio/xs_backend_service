@@ -1,8 +1,9 @@
 {
   "email": {
-    "service": "gmail",
-    "email": "xxxxx@gmail.com",
-    "password": "xxxxx"
+    "host": "mail.host.com",
+    "port": 587,
+    "email": "xxx@email.com",
+    "password": "password"
   },
   "port": 3000,
   "verify_link": "http://localhost:3333/verify/"
