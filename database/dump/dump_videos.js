@@ -19,7 +19,7 @@ co(function* () {
     yield Videos.create({
       name: video.name,
       description: video.description,
-      // image: video_img_base64,
+      image: video_img_base64,
       video_path: video_dir,
       preview: video.preview,
       homework: []
