@@ -63,8 +63,8 @@ router.get('/display/:video_name', function*() {
   console.log("[router.video] GET: display");
   const video_name = this.params.video_name;
   var video = yield Videos.findOne({"name": video_name});
-  var file = path.resolve(__dirname, video.video_path);
-  var headers = this.headers; 
+  var file = video.video_path;
+  var headers = this.headers;
   var range;
   var positions;
   var start;
