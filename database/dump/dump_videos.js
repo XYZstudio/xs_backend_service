@@ -22,6 +22,7 @@ co(function* () {
       image: video_img_base64,
       video_path: video_dir,
       preview: video.preview,
+      order: i,
       homework: []
     });
   }

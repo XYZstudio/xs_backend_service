@@ -1,4 +1,5 @@
 // Module
+const fs = require('fs');
 const koa = require('koa');
 const router = require('koa-router')();
 const config = require('../config');
@@ -20,7 +21,7 @@ router.get('/get_course/:course_name', function*() {
     video_names = course.video.map(c => c.videoName);
     videos = yield Videos.find({ name: { $in: video_names } });
     preview = videos.filter((v) => { return v.preview; })[0];
-    videos = videos.filter((v) => { return !v.preview; });
+    videos = videos.filter((v) => { return !v.preview; }).sort((a, b) => { return a.order - b.order });
   } catch(e) {
     this.status = 500;
     return;
@@ -119,6 +120,65 @@ router.post('/add_video_to_course', function*() {
     console.error(e);
     this.status = 500;
   }
+});
+
+router.get('/display/:video_name', function*() {
+  console.log("[router.course] GET: display");
+  const video_name = this.params.video_name;
+  var video = yield Videos.findOne({"name": video_name});
+  if (!video.preview) {
+    this.body = {
+      error: true,
+      resposne: "没有权限观看此视频"
+    }
+    return;
+  }
+  var file = video.video_path;
+  var headers = this.headers;
+  var range;
+  var positions;
+  var start;
+  var file_size;
+  var end;
+  var chunksize;
+  var stream_position;
+
+  if (!fs.existsSync(file)) {
+    this.body = {
+      error: true,
+      response: "file not exists"
+    }
+  }
+
+  range = headers.range;
+    
+  if(!range) {
+    let err = new Error("Wrong range");
+    this.status = 416;
+    this.body = {
+      error: true,
+      resposne: "Wrong range"
+    }
+    return;
+  }
+
+  var stats = fs.statSync(file);
+  positions = range.replace(/bytes=/, "").split("-");
+  start = parseInt(positions[0], 10);
+  file_size = stats.size;
+  end = positions[1] ? parseInt(positions[1], 10) : file_size - 1;
+  chunksize = (end - start) + 1;
+  stream_position = {
+    start: start,
+    end: end
+  }
+
+  this.set("Content-Range", "bytes " + start + "-" + end + "/" + file_size);
+  this.set("Accept-Ranges", "bytes");
+  this.set("Content-Length", chunksize);
+  this.set("Content-Type", "video/mp4");
+  this.status = 206;
+  this.body = fs.createReadStream(file, stream_position);
 });
 
 // Export
