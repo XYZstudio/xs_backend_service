@@ -122,8 +122,8 @@ router.post('/add_video_to_course', function*() {
   }
 });
 
-router.get('/display/:video_name', function*() {
-  console.log("[router.course] GET: display");
+router.get('/preview/:video_name', function*() {
+  console.log("[router.course] GET: preview");
   const video_name = this.params.video_name;
   var video = yield Videos.findOne({"name": video_name});
   if (!video.preview) {
