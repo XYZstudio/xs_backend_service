@@ -7,6 +7,7 @@ var VideoSchema = new mongoose.Schema({
   image:        String,
   video_path:   String,
   preview:      Boolean,
+  order:        Number,
   homework: [
     {
       homeworkName: { type: String }

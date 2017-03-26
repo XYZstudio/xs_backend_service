@@ -89,7 +89,7 @@ router.get('/display/:video_name', function*() {
       error: true,
       resposne: "Wrong range"
     }
-    return ;
+    return;
   }
 
   var stats = fs.statSync(file);
