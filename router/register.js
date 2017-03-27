@@ -6,6 +6,7 @@ const sendEmail = require('../service/email');
 const genToken = require('../service/encrypt');
 const config = require('../config');
 var Users = require('../database/schemas/users');
+var BasicInfos = require('../database/schemas/basicInfo');
 
 // Route
 router.post('/create_user', function*() {
@@ -103,6 +104,54 @@ router.post('/create_user', function*() {
   }
 
   this.body = yield Users.find({ email: req.email });;
+});
+
+router.post('/create_user_basic_info_by_id', function*() {
+  console.log("[router.register] POST: create_user_basic_info_by_id");
+  var body = this.request.body;
+  var user_id = body.userId;
+  var user;
+  
+  try {
+    user = yield Users.findOne({_id: user_id});
+  } catch(e) {
+    this.status = 500;
+    return;
+  }
+
+  var basicInfo = {
+    "userId":           user_id,
+    "userName":         body.userName,
+    "firstName":        body.firstName,
+    "lastName":         body.lastName, 
+    "currentStatus":    body.currentStatus,
+    "gender":           body.gender,
+    "birthYear":        body.birthYear,
+    "birthMonth":       body.birthMonth,
+    "birthDate":        body.birthDate,
+    "highestDegree":    body.highestDegree,
+    "careerDomain":     body.careerDomain,
+    "hobbies":          body.hobbies
+  };
+
+  try {
+    let basicInfoExists = yield BasicInfos.count({ userId: user_id });
+    if (basicInfoExists) {
+      this.body = {
+        error: true,
+        message: "无权更新已有用户信息"
+      };
+      return;
+    }
+    basicInfo = yield BasicInfos.create(basicInfo);
+  } catch(e) {
+    console.error(e);
+    this.status = 500;
+    return;
+  }
+
+  this.body = basicInfo;
+  return;
 });
 
 // Export
