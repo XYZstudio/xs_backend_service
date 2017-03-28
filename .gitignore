@@ -1,1 +1,5 @@
 node_modules
+cert/*
+.DS_Store
+config.json
+./config.json
