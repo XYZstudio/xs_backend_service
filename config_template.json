@@ -1,0 +1,18 @@
+{
+  "email": {
+    "host": "mail.xxx.com",
+    "port": 587,
+    "email": "xxx@email.com",
+    "password": "xxxxxx"
+  },
+  "payment": {
+  	"wechat": {
+  		"appid": "123456789012345678",
+			"mch_id": "1234567890",
+			"partner_key": "12345678901234567890123456789012"
+  	},
+  	"alipay": {}
+  },
+  "port": 3000,
+  "verify_link": "http://localhost:3333/verify/"
+}
