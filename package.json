@@ -12,6 +12,7 @@
     "@nodemailer/pro": "^1.0.0",
     "base-64": "^0.1.0",
     "bcrypt": "^1.0.2",
+    "bluebird": "^3.5.0",
     "co": "^4.6.0",
     "co-multipart": "0.2.0",
     "email-verification": "^0.4.5",
