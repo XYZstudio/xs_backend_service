@@ -12,7 +12,7 @@ const wxpay = WXPay({
 const order = function(total_fee, spbill_create_ip, product_id) {
 	return new Promise(function(resolve, reject) {
 		wxpay.createUnifiedOrder({
-			body: '课程购买',
+			body: '思博锐-课程购买',
 	  	out_trade_no: `${new Date().getTime()}${Math.random().toString().substr(2, 7)}`,
 	  	total_fee: total_fee,
 	  	spbill_create_ip: spbill_create_ip,

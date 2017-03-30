@@ -13,6 +13,7 @@
   	},
   	"alipay": {}
   },
+  "host": "123.12.123.12",
   "port": 3000,
   "verify_link": "http://localhost:3333/verify/"
 }

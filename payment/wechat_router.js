@@ -1,7 +1,9 @@
 // Module
 const koa = require('koa');
 const router = require('koa-router')();
+const config = require('../config.json');
 const wechat_lib = require('./wechat_lib');
+const ip_lib = require('../service/ip_address');
 const Courses = require('../database/schemas/courses');
 var app = koa();
 
@@ -14,7 +16,7 @@ router.post('/wechat/order', function*() {
   	let total_fee = yield Courses.findOne({ name: body.product_id });
 	  total_fee = total_fee.fee;
 	  const product_id = body.product_id;
-	  const spbill_create_ip = body.spbill_create_ip;
+	  const spbill_create_ip = config.host;
 		const qrCode = yield wechat_lib.order(total_fee, spbill_create_ip, product_id);
 		this.body = qrCode;
 		return;
