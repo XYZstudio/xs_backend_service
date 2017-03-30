@@ -17,8 +17,8 @@ router.post('/wechat/order', function*() {
 	  total_fee = total_fee.fee;
 	  const product_id = body.product_id;
 	  const spbill_create_ip = config.host;
-		const qrCode = yield wechat_lib.order(total_fee, spbill_create_ip, product_id);
-		this.body = qrCode;
+		const order = yield wechat_lib.order(total_fee, spbill_create_ip, product_id);
+		this.body = order.qr_code;
 		return;
   } catch(e) {
   	console.error(e);
