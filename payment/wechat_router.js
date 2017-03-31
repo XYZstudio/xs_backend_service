@@ -5,6 +5,7 @@ const config = require('../config.json');
 const wechat_lib = require('./wechat_lib');
 const ip_lib = require('../service/ip_address');
 const Courses = require('../database/schemas/courses');
+const PaymentHistory = require('../database/schemas/paymentHistory');
 var app = koa();
 
 // Route
@@ -15,9 +16,17 @@ router.post('/wechat/order', function*() {
   try {
   	let total_fee = yield Courses.findOne({ name: body.product_id });
 	  total_fee = total_fee.fee;
+	  const user_id = body.email;
 	  const product_id = body.product_id;
 	  const spbill_create_ip = config.host;
-		const order = yield wechat_lib.order(total_fee, spbill_create_ip, product_id);
+	  const out_trade_no = `${new Date().getTime()}${Math.random().toString().substr(2, 7)}`;
+		const order = yield wechat_lib.order(out_trade_no, total_fee, spbill_create_ip, product_id);
+		yield PaymentHistory.create({
+			user_id: user_id,
+		  product_id: product_id,
+		  trade_id: out_trade_no,
+		  fee: total_fee,
+		});
 		this.body = order.qr_code;
 		return;
   } catch(e) {

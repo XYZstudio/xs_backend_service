@@ -9,11 +9,11 @@ const wxpay = WXPay({
 	partner_key: config.partner_key
 });
 
-const order = function(total_fee, spbill_create_ip, product_id) {
+const order = function(out_trade_no, total_fee, spbill_create_ip, product_id) {
 	return new Promise(function(resolve, reject) {
 		wxpay.createUnifiedOrder({
 			body: '思博锐-课程购买',
-	  	out_trade_no: `${new Date().getTime()}${Math.random().toString().substr(2, 7)}`,
+	  	out_trade_no: out_trade_no,
 	  	total_fee: total_fee,
 	  	spbill_create_ip: spbill_create_ip,
 	  	notify_url: 'http://www.sporit.cn/api/v1/received_wechat_pay',

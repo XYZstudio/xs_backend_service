@@ -68,25 +68,6 @@ router.post('/get_courses', function*() {
   this.body = courses;
 });
 
-// Create courses with empty videos
-router.post('/add_course', function*() {
-  var req = this.request.body;
-  var course = {
-    name: req.name,
-    description: req.description,
-    image: req.image,
-  };
-
-  try {
-    yield Courses.create(course);
-  } catch(e) {
-    this.status = 500;
-    return;
-  }
-
-  this.statue = 200;
-});
-
 router.post('/add_video_to_course', function*() {
   var req = this.request.body;
   var video_name = req.video_name;
