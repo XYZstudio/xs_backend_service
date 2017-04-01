@@ -1,68 +1,38 @@
 // Module
 const koa = require('koa');
 const router = require('koa-router')();
+const _ = require('underscore');
 var app = koa();
-
 var fs = require("fs")
 var path = require("path");
-
-// Collection
-var Homework = require('../database/schemas/homeworks');
+var Courses = require('../database/schemas/courses');
 var Videos = require('../database/schemas/videos');
 
 // Route
-router.post('/add_video', function*() {
-	  console.log("add video");
-    var req = this.request.body;
-
-    var video = {
-      name: req.name,
-	    description: req.description,
-	    video_path: req.video_path,
-	    homework: req.homework
-    };
-
-    try {
-      yield Videos.create(video);
-    } catch(e) {
-      this.status(500);
-    }
-
-    this.body = video;
-});
-
-router.post('/add_homework_to_video', function*() {
-    console.log("[router.video] POST: add_homework_to_video");
-    var req = this.request.body;
-    var hw_name = req.hw_name;
-    var video_name = req.video_name;
-    try {
-      var hw = yield Homework.find({"name": hw_name});
-      var video = yield Videos.find({"name": video_name});
-      if( hw.length == 1 && video.length == 1) {
-        video[0].homework.push(hw_name);
-        Videos.update({_id: video[0]._id}, video[0].toObject(), {new: true}, function(err, comment){
-          if(err){
-            console.log(err);
-            return;
-          }
-        });
-      } else{
-        console.log("invalid homework or video");
-        this.body = {
-          error: true,
-          response: '作业名或视频名称不正确'
-        };
-      }
-    } catch(e) {
-      console.log(e);
-    }
-});
-
 router.get('/display/:video_name', function*() {
   console.log("[router.video] GET: display");
   const video_name = this.params.video_name;
-  var video = yield Videos.findOne({"name": video_name});
+  const purchased_courses = this.req.user.course.map(c => c.courseName);
+  let video;
+  try {
+    let courses = yield Courses.find({ name: { $in: purchased_courses } });
+    let purchased_videos = _.flatten(courses.map(c => c.video)).map(v => v.videoName);
+    if (!_.contains(purchased_videos, video_name)) {
+      this.body = {
+        error: true,
+        message: "没有权限观看此视频"
+      }
+      return;
+    }
+    video = yield Videos.findOne({"name": video_name});
+  } catch(e) {
+    console.error(e);
+    this.body = {
+      error: true,
+      message: "视频播放错误"
+    }
+    return;
+  }
   var file = video.video_path;
   var headers = this.headers;
   var range;
@@ -76,18 +46,17 @@ router.get('/display/:video_name', function*() {
   if (!fs.existsSync(file)) {
     this.body = {
       error: true,
-      response: "file not exists"
+      message: "不存在该视频"
     }
   }
 
   range = headers.range;
     
   if(!range) {
-    let err = new Error("Wrong range");
     this.status = 416;
     this.body = {
       error: true,
-      resposne: "Wrong range"
+      message: "视频播放错误"
     }
     return;
   }

@@ -49,68 +49,24 @@ router.get('/get_all_courses', function*() {
   this.body = courses;
 });
 
-// if user email exists,
-// then only get courses 
-// that is available to that user
-router.post('/get_courses', function*() {
-  const email = this.request.body.email;
-  var courses = [];
-  
-  try {
-    var user = yield Users.findOne({ email: email, status: 'active' });
-    var courseNames = user.course.map(c => c.courseName);
-    courses = yield Courses.find({ name: { $in: courseNames } });
-  } catch(e) {
-    this.status = 500;
-    return;
-  }
-  
-  this.body = courses;
-});
-
-router.post('/add_video_to_course', function*() {
-  var req = this.request.body;
-  var video_name = req.video_name;
-  var course_name = req.course_name;
-
-  try {
-    var course = yield Courses.find({ name: course_name });
-    var video = yield Videos.find({ name: video_name });
-    if(video.length == 1 && video.length == 1) {
-      /*
-      course[0].video.push(video[0].name);
-      Courses.update({ _id: course[0]._id }, course[0].toObject(), { new: true }, function(err, comment){
-        if(err){
-          console.error(err);
-          return;
-        }
-      });*/
-      yield Courses.update({ name: course_name }, {
-      $addToSet: {
-        video: { videoName: video_name }
-      }
-      });
-    } else{
-      console.error('invalid course or video');
-      this.body = {
-        error: true,
-        response: '视频名或课程名不正确',
-      };
-    }
-  } catch(e) {
-    console.error(e);
-    this.status = 500;
-  }
-});
-
 router.get('/preview/:video_name', function*() {
   console.log("[router.course] GET: preview");
   const video_name = this.params.video_name;
-  var video = yield Videos.findOne({"name": video_name});
+  let video;
+  try {
+    video = yield Videos.findOne({ "name": video_name });
+  } catch(e) {
+    console.error(e);
+    this.body = {
+      error: true,
+      message: "视频播放错误"
+    }
+    return;
+  }
   if (!video.preview) {
     this.body = {
       error: true,
-      resposne: "没有权限观看此视频"
+      message: "没有权限观看此视频"
     }
     return;
   }
@@ -127,18 +83,17 @@ router.get('/preview/:video_name', function*() {
   if (!fs.existsSync(file)) {
     this.body = {
       error: true,
-      response: "file not exists"
+      message: "不存在该视频"
     }
   }
 
   range = headers.range;
     
   if(!range) {
-    let err = new Error("Wrong range");
     this.status = 416;
     this.body = {
       error: true,
-      resposne: "Wrong range"
+      message: "视频播放错误"
     }
     return;
   }
@@ -152,7 +107,7 @@ router.get('/preview/:video_name', function*() {
   stream_position = {
     start: start,
     end: end
-  }
+  };
 
   this.set("Content-Range", "bytes " + start + "-" + end + "/" + file_size);
   this.set("Accept-Ranges", "bytes");
