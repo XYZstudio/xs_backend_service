@@ -22,11 +22,25 @@ router.post('/add_course_to_user', function*() {
   try {
     // check if order is paid
     const order = yield wechat_lib.check(transaction_id);
+    if (order.return_code === 'FAIL') {
+      this.body = {
+        error: true,
+        message: '请输入交易单号',
+      };
+      return;
+    }
+    if (order.result_code === 'FAIL') {
+      this.body = {
+        error: true,
+        message: '请输入正确的交易单号'
+      };
+      return;
+    }
     const trade_id = order.out_trade_no;
     const payment = yield PaymentHistory.findOne({ user_id: email, trade_id: trade_id });
     let courseNames = [payment.product_id];
 
-    if (order && order.trade_state === 'SUCCESS') {
+    if (order.trade_state === 'SUCCESS') {
       // check if course already added
       let existedCourses = yield Users.findOne({ email: email });
       existedCourses = existedCourses.course.map(c => c.courseName);
@@ -35,7 +49,7 @@ router.post('/add_course_to_user', function*() {
       if (courseNames.length === 0) {
         this.body = {
           error: true,
-          message: '订单号不存在或购买失败',
+          message: '交易单号不存在或购买失败',
         };
         return;
       }
@@ -49,7 +63,7 @@ router.post('/add_course_to_user', function*() {
     } else {
       this.body = {
         error: true,
-        message: '订单号不存在或购买失败'
+        message: '交易单号不存在或购买失败'
       };
       return;
     }
@@ -58,7 +72,7 @@ router.post('/add_course_to_user', function*() {
     this.body = yield Users.findOne({ email: email });
     return;
   } catch(e) {
-    this.status = 500;
+    // this.status = 500;
     this.body = {
       error: true,
       message: '用户名或课程名不正确',
