@@ -40,6 +40,7 @@ app.use(mount('/api/v1', require('./router/verify')));
 app.use(mount('/api/v1', require('./router/course')));
 app.use(mount('/api/v1', require('./router/auth')));
 app.use(mount('/api/v1', require('./router/career')));
+app.use(mount('/api/v1', require('./payment/wechat_router')));
 
 app.use(function*(next) {
   if(this.isAuthenticated()) {

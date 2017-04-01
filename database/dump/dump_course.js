@@ -23,6 +23,7 @@ co(function* () {
       name: course.name,
       description: course.description,
       image: course_img_base64,
+      fee: course.fee,
       video: videos
     });
   }
