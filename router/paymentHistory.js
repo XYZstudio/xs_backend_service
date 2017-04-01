@@ -1,9 +1,9 @@
 // Module
 const koa = require('koa');
 const router = require('koa-router')();
-var app = koa();
-var PaymentHistory = require('../database/schemas/paymentHistory');
-var Users = require('../database/schemas/users');
+const app = koa();
+const PaymentHistory = require('../database/schemas/paymentHistory');
+const Users = require('../database/schemas/users');
 
 // Route
 
@@ -11,7 +11,7 @@ var Users = require('../database/schemas/users');
 router.post('/update_user_payment_history_by_id', function*() {
   console.log("[router.paymentHistory] POST: update_user_payment_history_by_id");
   var body = this.request.body;
-  var user_id = body.userId;
+  var user_id = body.user_id;
   var user;
   
   try {
@@ -29,14 +29,13 @@ router.post('/update_user_payment_history_by_id', function*() {
   }
 
   var payment = {
-    "userId":               user_id,
-    "courseId":             body.courseId,
-    "product_id":           body.product_id,
-    "paymentType":          body.paymentType, 
-    "price":                body.price
+    "user_id": user_id,
+    "product_id": body.product_id,
+    "trade_id": body.trade_id,
+    "fee": body.fee
   };
 
-  var user_payment = yield PaymentHistory.findOne({userId: user_id});
+  var user_payment = yield PaymentHistory.findOne({user_id: user_id});
   if( user_payment == null || body._id == null ) {
     try {
       console.log("creating payment");
@@ -64,9 +63,9 @@ router.post('/update_user_payment_history_by_id', function*() {
 });
 
 // get payment history by user id
-router.get('/get_user_payment_history_by_id/:userId', function*() {
+router.get('/get_user_payment_history_by_id/:user_id', function*() {
   console.log("[router.paymentHistory] GET: get_user_payment_history_by_id");
-  const user_id = this.params.userId;
+  const user_id = this.params.user_id;
   var contact;
 
   try {
@@ -84,7 +83,7 @@ router.get('/get_user_payment_history_by_id/:userId', function*() {
   }
   
 
-  payments = yield PaymentHistory.find({userId: user_id});
+  payments = yield PaymentHistory.find({user_id: user_id});
 
   if ( payments == null ) {
     this.body = {};

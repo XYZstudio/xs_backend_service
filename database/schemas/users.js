@@ -5,16 +5,16 @@ const SALT_WORK_FACTOR = 10;
 
 var UserSchema = new mongoose.Schema({
   email: { type: String, unique: true },
-  name:          String,
-  password:      String,
-  status:        String,
-  verify:        String,
-  icon:          String,
-  icon_type:          String,
+  name: String,
+  password: String,
+  status: String,
+  verify: String,
+  icon: String,
+  icon_type: String,
   lastActivity: {
-    courseName:  String,
-    videoName:   String,
-    time:        Number
+    courseName: String,
+    videoName: String,
+    time: Number
   },
   course: [
     {
