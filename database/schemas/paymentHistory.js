@@ -6,7 +6,6 @@ var PaymentHistorySchema = new mongoose.Schema({
   product_id: String,
   trade_id: String,
   fee: Number,
-  status: { type : String, default: 'inactive' },
   date: { type : Date, default: Date.now }
 });
 

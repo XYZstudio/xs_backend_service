@@ -24,18 +24,18 @@ router.post('/add_course_to_user', function*() {
     const order = yield wechat_lib.check(transaction_id);
     const trade_id = order.out_trade_no;
     const payment = yield PaymentHistory.findOne({ user_id: email, trade_id: trade_id });
-    const courseNames = [payment.product_id];
+    let courseNames = [payment.product_id];
 
     if (order && order.trade_state === 'SUCCESS') {
       // check if course already added
       let existedCourses = yield Users.findOne({ email: email });
       existedCourses = existedCourses.course.map(c => c.courseName);
-      courseNames = _.difference(courseNames, existedCourses).map((n) => { return { courseName: n } });
-
+      courseNames = _.difference(courseNames, existedCourses);
+      courseNames = courseNames.map((n) => { return { courseName: n } });
       if (courseNames.length === 0) {
         this.body = {
           error: true,
-          message: '所选课程已经存在于用户的课单',
+          message: '订单号不存在或购买失败',
         };
         return;
       }
