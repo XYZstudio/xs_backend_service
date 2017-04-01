@@ -3,9 +3,11 @@ const koa = require('koa');
 const router = require('koa-router')();
 const _ = require('underscore');
 const config = require('../config');
+const wechat_lib = require('../payment/wechat_lib');
 const app = koa();
 const Users = require('../database/schemas/users');
 const Courses = require('../database/schemas/courses');
+const PaymentHistory = require('../database/schemas/paymentHistory');
 
 // Route
 
@@ -13,38 +15,67 @@ const Courses = require('../database/schemas/courses');
 // and return the updated user data
 router.post('/add_course_to_user', function*() {
   console.log("[router.user] POST: add_course_to_user");
-  var req = this.request.body;
-  var courseNames = req.courseNames;
-  var email = req.email;
+  const body = this.request.body;
+  const email = body.email;
+  const transaction_id = body.transaction_id;
 
   try {
-    // update users' courses
-    var existedCourses = yield Users.findOne({ email: email });
-    existedCourses = existedCourses.course.map(c => c.courseName);
-    courseNames = _.difference(courseNames, existedCourses).map((n) => { return { courseName: n } });
-
-    if (courseNames.length === 0) {
+    // check if order is paid
+    const order = yield wechat_lib.check(transaction_id);
+    if (order.return_code === 'FAIL') {
       this.body = {
         error: true,
-        response: '所选课程已经存在于用户的课单',
+        message: '请输入交易单号',
       };
       return;
     }
+    if (order.result_code === 'FAIL') {
+      this.body = {
+        error: true,
+        message: '请输入正确的交易单号'
+      };
+      return;
+    }
+    const trade_id = order.out_trade_no;
+    const payment = yield PaymentHistory.findOne({ user_id: email, trade_id: trade_id });
+    let courseNames = [payment.product_id];
 
-    yield Users.update({ email: email }, {
-      $addToSet: {
-        course: { $each: courseNames }
+    if (order.trade_state === 'SUCCESS') {
+      // check if course already added
+      let existedCourses = yield Users.findOne({ email: email });
+      existedCourses = existedCourses.course.map(c => c.courseName);
+      courseNames = _.difference(courseNames, existedCourses);
+      courseNames = courseNames.map((n) => { return { courseName: n } });
+      if (courseNames.length === 0) {
+        this.body = {
+          error: true,
+          message: '交易单号不存在或购买失败',
+        };
+        return;
       }
-    });
+
+      // update users' courses
+      yield Users.update({ email: email }, {
+        $addToSet: {
+          course: { $each: courseNames }
+        }
+      });
+    } else {
+      this.body = {
+        error: true,
+        message: '交易单号不存在或购买失败'
+      };
+      return;
+    }
 
     // get updated user data
     this.body = yield Users.findOne({ email: email });
     return;
   } catch(e) {
-    this.status = 500;
+    // this.status = 500;
     this.body = {
       error: true,
-      response: '用户名或课程名不正确',
+      message: '用户名或课程名不正确',
     };
     return;
   }
@@ -92,7 +123,7 @@ router.post('/update_finished_video_to_user', function*() {
           if(video_name == course.finished[j].videoName ) {
             this.body = {
               error: true,
-              response: "该同学已完成该视频"
+              message: "该同学已完成该视频"
             };
             return;
           }
@@ -114,13 +145,13 @@ router.post('/update_finished_video_to_user', function*() {
   } else {
     this.body = {
       error: true,
-      response: "找不到用户"
+      message: "找不到用户"
     };
     return;
   }
   this.body = {
     error: true,
-    response: "找不到视频或课程"
+    message: "找不到视频或课程"
   };
   return;
 
@@ -146,13 +177,13 @@ router.post('/get_finished_videos_of_course', function*() {
     } 
     this.body = {
       error: true, 
-      response: "找不到课程"
+      message: "找不到课程"
     }
     return;
   } else {
     this.body = {
       error: true, 
-      response: "找不到用户"
+      message: "找不到用户"
     }
     return;
   }
