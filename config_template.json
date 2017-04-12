@@ -1,4 +1,7 @@
 {
+  "db_name": "xxxxx",
+  "db_user": "xxxxx",
+  "db_password": "xxxxx",
   "email": {
     "host": "mail.xxx.com",
     "port": 587,

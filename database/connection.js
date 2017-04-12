@@ -1,6 +1,8 @@
+const config = require('../config.json');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-var url = 'mongodb://localhost:27017/sporit';
+// mongodb://youruser:yourpassword@localhost/yourdatabase
+var url = `mongodb://${config.db_user}:${config.db_password}@localhost:27017/${config.db_name}`;
 var options = {
   server: { reconnectTries: Number.MAX_VALUE }
 };
