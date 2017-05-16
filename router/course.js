@@ -49,6 +49,25 @@ router.get('/get_all_courses', function*() {
   this.body = courses;
 });
 
+// Get Course info by video name
+router.get('/get_course_by_video_name/:video_name', function*() {
+  console.log("[router.course] GET: get_course_by_video_name");
+  var video_name = this.params.video_name;
+  var course;
+  try {
+    course = yield Courses.findOne({ 'video.videoName': video_name });
+  } catch(e) {
+    console.error(e);
+    this.message = {
+      error: true,
+      message: "未找到该课程"
+    };
+    return;
+  }
+
+  this.body = course;
+});
+
 router.get('/preview/:video_name', function*() {
   console.log("[router.course] GET: preview");
   const video_name = this.params.video_name;
