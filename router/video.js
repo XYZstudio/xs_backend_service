@@ -9,6 +9,23 @@ var Courses = require('../database/schemas/courses');
 var Videos = require('../database/schemas/videos');
 
 // Route
+router.get('/get_video/:video_name', function*() {
+  console.log("[router.video] GET: get_video");
+  const video_name = this.params.video_name;
+  try {
+    let video = yield Videos.findOne({ name: video_name });
+    this.body = video;
+    return;
+  } catch(e) {
+    console.error(e);
+    this.body = {
+      error: true,
+      message: "不存在该视频的信息"
+    };
+    return;
+  }
+});
+
 router.get('/display/:video_name', function*() {
   console.log("[router.video] GET: display");
   const video_name = this.params.video_name;
