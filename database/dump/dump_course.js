@@ -19,13 +19,17 @@ co(function* () {
     videos = videos.map(v => {
       return { videoName: v };
     });
-    yield Courses.create({
-      name: course.name,
-      description: course.description,
-      image: course_img_base64,
-      fee: course.fee,
-      video: videos
-    });
+    try {
+      yield Courses.create({
+        name: course.name,
+        description: course.description,
+        image: course_img_base64,
+        fee: course.fee,
+        video: videos
+      });
+    } catch(e) {
+      console.error(e);
+    }
   }
 
   mongoose.connection.close(function () {

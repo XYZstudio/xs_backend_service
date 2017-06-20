@@ -16,15 +16,19 @@ co(function* () {
     let video_img_dir = getPath(video.index, 'image', video.img);
     let video_img_base64 = fs.readFileSync(video_img_dir).toString('base64');
     let video_dir = getPath(video.index, 'video', video.video);
-    yield Videos.create({
-      name: video.name,
-      description: video.description,
-      image: video_img_base64,
-      video_path: video_dir,
-      preview: video.preview,
-      order: i,
-      homework: []
-    });
+    try {
+      yield Videos.create({
+        name: video.name,
+        description: video.description,
+        image: video_img_base64,
+        video_path: video_dir,
+        preview: video.preview,
+        order: i,
+        homework: []
+      });
+    } catch(e) {
+      console.error(e);
+    }
   }
 
   mongoose.connection.close(function () {
