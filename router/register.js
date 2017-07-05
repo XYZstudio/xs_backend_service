@@ -10,7 +10,7 @@ var BasicInfos = require('../database/schemas/basicInfo');
 
 // Route
 router.post('/create_user', function*() {
-  console.log('register!');
+  console.log("[router.register] POST: create_user");
   var req = this.request.body;
   var password = yield genToken(req.password, false);
   var token = yield genToken(req.email, true);
@@ -27,9 +27,13 @@ router.post('/create_user', function*() {
     },
     course: []
   };
+  var matchInnerKey = req.inner_key && req.inner_key === config.inner_key;
+
+  if (matchInnerKey) {
+    user.status = 'active';
+  }
 
   try {
-    console.log('Checking exsiting user ...');
     var existingUser = yield Users.find({ email: req.email });
 
     //Email already existed but not verified
@@ -54,7 +58,6 @@ router.post('/create_user', function*() {
       return;
     } else {
       //create new user
-      console.log('Creating user...');
       yield Users.create(user);
     }
   } catch(e) {
@@ -67,7 +70,6 @@ router.post('/create_user', function*() {
   }
 
   try {
-    console.log('Sending email...');
     var mailOptions = {
       from: config.email.email,
       to: user.email,
@@ -97,8 +99,9 @@ router.post('/create_user', function*() {
               '</p>' +
             '</div>'
     };
-    yield sendEmail(mailOptions);
-    console.log('Email sent.');
+    if (!matchInnerKey) {
+      yield sendEmail(mailOptions);
+    }
   } catch(e) {
     // Ignore ...
   }
